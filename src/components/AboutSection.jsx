@@ -23,7 +23,7 @@ const AboutSection = () => {
       </div>
 
       {/* ── Stats Section (Spaced Out) ────────────────────────────────────── */}
-      <div className="w-full max-w-[1440px] px-[66px] py-[80px] flex justify-between items-center gap-[20px]">
+      <div className="w-full max-w-[1270px] ml-[-70px] px-[36px] py-[40px] flex justify-between items-center gap-[10px]">
         {[
           { val: "30%", label: "Lorem ipsum dolor" },
           { val: "20%", label: "Lorem ipsum" },

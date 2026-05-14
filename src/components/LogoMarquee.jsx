@@ -17,15 +17,15 @@ const LogoMarquee = () => {
 
   return (
     <section className="w-full bg-[#EFEDE7] py-[60px] flex flex-col items-center justify-center overflow-hidden border-t border-black/5">
-      <div className="w-full h-[111px] flex items-center overflow-hidden">
+      <div className="w-[1200px] h-[111px] flex items-center overflow-hidden">
         <div className="flex animate-marquee whitespace-nowrap gap-[100px]">
           {scrollLogos.map((logo, index) => (
-            <div key={index} className="flex-shrink-0 w-[172px] h-[40px] relative">
+            <div key={index} className="flex-shrink-0 w-[169px] h-[30px] relative">
               <Image
                 src={logo}
                 alt={`Client Logo ${index}`}
                 fill
-                className="object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                className="object-contain grayscale opacity-100"
               />
             </div>
           ))}

@@ -31,12 +31,12 @@ const FAQSection = () => {
         </div>
 
         {/* Title */}
-        <h2 className="font-roundo font-medium text-[52px] md:text-[64px] leading-[1.05] tracking-[-1px] text-[#1A1A1A]">
+        <h2 className="font-roundo font-medium text-[60px] md:text-[72px] leading-[1.05] tracking-[-1px] text-[#000000]">
           Frequent Asked Questions
         </h2>
 
         {/* Subtitle */}
-        <p className="font-sans font-normal text-[18px] leading-[1.5] text-[#334454]/70 max-w-[480px]">
+        <p className="font-Geist font-regular text-[20px] leading-[28px] tracking-[0] text-[#334454]/70 max-w-[480px]">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
         </p>
       </div>
@@ -56,7 +56,7 @@ const FAQSection = () => {
                 onClick={() => toggle(i)}
                 className="w-full flex items-center justify-between px-6 py-[18px] text-left"
               >
-                <span className="font-sans font-normal text-[17px] leading-[1.3] text-white">
+                <span className="font-Geist font-regular text-[22px] leading-[28px] tracking-[0] text-white">
                   {faq.q}
                 </span>
                 <div className="flex-shrink-0 w-[32px] h-[32px] bg-white rounded-[7px] flex items-center justify-center ml-4 shadow-sm">
