@@ -17,7 +17,7 @@ const VillaPlansSection = () => {
       </p>
 
       {/* ── Image Display with Overlay ────────────────────────────────────── */}
-      <div className="relative w-[1284.9px] h-[719.92px] rounded-[16px] overflow-hidden group">
+      <div className="relative w-full max-w-[1284.9px] aspect-[1284.9/719.92] rounded-[16px] overflow-hidden group">
         {/* Main Image */}
         <Image
           src={activeTab === 'villas' ? "/dummyimages/Overlay.png" : "/dummyimages/Frame 2121454280.png"}
@@ -57,7 +57,7 @@ const VillaPlansSection = () => {
             <button className="w-full h-full flex items-center bg-[#6B859E] border border-white/30 rounded-[12px] text-white hover:bg-white hover:text-[#6B859E] transition-all group/btn pr-[48px] pl-4">
               <span className="text-[16px] font-sans font-medium whitespace-nowrap">Learn More</span>
             </button>
-            <div className="absolute top-[8px] right-[8px] w-[36px] h-[36px] bg-[#6B859E] text-black rounded-[8px] flex items-center justify-center pointer-events-none group-hover/btn:bg-[#6B859E] group-hover/btn:text-white transition-colors">
+            <div className="absolute top-[8px] right-[8px] w-[36px] h-[36px] bg-[#6B859E] text-black rounded-[8px] flex items-center justify-center pointer-events-none group-hover/btn:bg-white group-hover/btn:text-[#6B859E] transition-colors">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
