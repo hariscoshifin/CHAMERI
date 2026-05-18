@@ -195,23 +195,37 @@ const ContactSection = () => {
             <div style={{ height: '52px', display: 'flex', alignItems: 'center' }}>
               <button
                 type="submit"
-                className="group flex items-center justify-between overflow-hidden bg-[#6B859E] hover:bg-[#334454] transition-all duration-300"
-                style={{ width: '167px', height: '52px', borderRadius: '10px', paddingLeft: '12px', paddingRight: '8px' }}
+                className="group relative w-[167px] h-[52px] flex items-center bg-[#6B859E] hover:bg-[#334454] transition-colors duration-500 rounded-[12px] overflow-hidden cursor-pointer border-none"
               >
-                <span
-                  style={{ fontFamily: 'var(--font-geist-sans), sans-serif', fontWeight: 500, fontSize: '15px', color: '#fff' }}
-                  className="transition-transform duration-300 group-hover:translate-x-[2px]"
-                >
-                  Contact Us
-                </span>
-                <div
-                  className="flex items-center justify-center bg-white/20 rounded-[8px] flex-shrink-0 transition-all duration-300 group-hover:bg-white group-hover:scale-110 group-hover:translate-x-[3px]"
-                  style={{ width: '36px', height: '36px' }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-                    className="text-white group-hover:text-[#334454] transition-colors duration-300">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
+                {/* Sliding text container */}
+                <div className="absolute top-[14px] left-[12px] w-[97px] h-[23px] overflow-hidden">
+                  <div className="flex flex-col transition-transform duration-500 ease-in-out group-hover:-translate-y-1/2">
+                    <span style={{ fontFamily: 'var(--font-geist-sans), sans-serif' }} className="text-[15px] font-medium text-white whitespace-nowrap h-[23px] flex items-center">
+                      Contact Us
+                    </span>
+                    <span style={{ fontFamily: 'var(--font-geist-sans), sans-serif' }} className="text-[15px] font-medium text-white whitespace-nowrap h-[23px] flex items-center">
+                      Contact Us
+                    </span>
+                  </div>
+                </div>
+
+                {/* Arrow icon box */}
+                <div className="absolute right-[12px] w-[30px] h-[30px] rounded-[7px] bg-white group-hover:bg-[#EDE7DE] transition-colors duration-500 overflow-hidden">
+                  
+                  {/* Original Arrow - Flies out to the right */}
+                  <div className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-in-out group-hover:translate-x-full">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#6B859E] group-hover:text-[#4a6074] transition-colors duration-500">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </div>
+
+                  {/* New Arrow - Comes in from the left */}
+                  <div className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-in-out -translate-x-full group-hover:translate-x-0">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#6B859E] group-hover:text-[#4a6074] transition-colors duration-500">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </div>
+
                 </div>
               </button>
             </div>

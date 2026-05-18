@@ -32,7 +32,7 @@ const WhyChooseUs = () => {
   ];
 
   return (
-    <section className="w-full h-[628px] bg-[#EFEDE7] py-[60px] px-[80px] flex flex-col items-center gap-[60px] overflow-hidden">
+    <section className="w-full h-[628px] bg-[#EDE7DE] py-[60px] px-[80px] flex flex-col items-center gap-[60px] overflow-hidden">
       {/* ── Top Header Section ── */}
       <div className="w-full max-w-[1280px] flex flex-col gap-6">
         {/* Badge */}

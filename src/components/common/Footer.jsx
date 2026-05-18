@@ -43,12 +43,14 @@ const Footer = () => {
                 height: '183px',
               }}
             >
-              <Image
-                src="/dummyimages/logo (2).svg"
-                alt="Chameri Logo"
-                fill
-                className="object-contain"
-              />
+              <a href="/" className="block w-full h-full cursor-pointer transition-opacity hover:opacity-80">
+                <Image
+                  src="/dummyimages/logo (2).svg"
+                  alt="Chameri Logo"
+                  fill
+                  className="object-contain"
+                />
+              </a>
             </div>
           </div>
 
@@ -84,14 +86,13 @@ const Footer = () => {
                     <a
                       key={link}
                       href="#"
-                      className="hover:text-white transition-colors"
+                      className="text-[#EDE7DE]/80 hover:text-white transition-colors"
                       style={{
                         fontFamily: 'var(--font-geist-sans), sans-serif',
                         fontWeight: 400,
                         fontSize: '16px',
                         lineHeight: '12px',
                         letterSpacing: '-1%',
-                        color: 'rgba(237, 231, 222, 0.8)',
                         width: '179px',
                         height: '14.25px',
                         display: 'flex',
@@ -109,17 +110,18 @@ const Footer = () => {
                 <h3 className="w-full text-white font-roundo font-medium text-[20px]">
                   Address
                 </h3>
-                <p
+                <a
+                  href="#"
+                  className="text-[#EDE7DE]/80 hover:text-white transition-colors block"
                   style={{
                     fontFamily: 'var(--font-geist-sans), sans-serif',
                     fontWeight: 400,
                     fontSize: '15px',
                     lineHeight: '1.6',
-                    color: 'rgba(237, 231, 222, 0.8)',
                   }}
                 >
                   #27/205, Madapeedika, Paral (PO), Thalasserry, Kannur, Kerala, 670601
-                </p>
+                </a>
               </div>
 
               {/* 3) Contact Us section: w 199.29, h 97, gap 20 */}
@@ -130,24 +132,22 @@ const Footer = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   <a
                     href="tel:+919188913114"
-                    className="hover:text-white transition-colors"
+                    className="text-[#EDE7DE]/80 hover:text-white transition-colors block"
                     style={{
                       fontFamily: 'var(--font-geist-sans), sans-serif',
                       fontWeight: 400,
                       fontSize: '15px',
-                      color: 'rgba(237, 231, 222, 0.8)',
                     }}
                   >
                     +91 91889 13114
                   </a>
                   <a
                     href="tel:+919188913114"
-                    className="hover:text-white transition-colors"
+                    className="text-[#EDE7DE]/80 hover:text-white transition-colors block"
                     style={{
                       fontFamily: 'var(--font-geist-sans), sans-serif',
                       fontWeight: 400,
                       fontSize: '15px',
-                      color: 'rgba(237, 231, 222, 0.8)',
                     }}
                   >
                     +91 91889 13114
@@ -182,11 +182,10 @@ const Footer = () => {
                 <a
                   key={idx}
                   href="#"
-                  className="hover:text-white hover:scale-110 transition-all flex items-center justify-center"
+                  className="text-[#EDE7DE] hover:text-white hover:scale-110 transition-all flex items-center justify-center cursor-pointer"
                   style={{
                     width: '23px',
                     height: '22px',
-                    color: '#EDE7DE'
                   }}
                 >
                   {icon}
@@ -212,17 +211,18 @@ const Footer = () => {
             height: '9px',
           }}
         >
-          <p
+          <a
+            href="#"
+            className="text-[#EDE7DE]/80 hover:text-white transition-colors block"
             style={{
               fontFamily: 'var(--font-geist-sans), sans-serif',
               fontWeight: 400,
               fontSize: '12px',
               lineHeight: '8.4px',
-              color: 'rgba(237, 231, 222, 0.8)', // Matching the other text color for consistency
             }}
           >
             © Chameri Builders pvt limited
-          </p>
+          </a>
         </div>
 
       </div>

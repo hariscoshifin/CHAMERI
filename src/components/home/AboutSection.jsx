@@ -19,31 +19,39 @@ const STATS = [
 
 const AboutSection = () => {
   const sectionRef = useRef(null);
+  const headingRef = useRef(null);
   const [progress, setProgress] = useState(0); // 0 → 1
 
   useEffect(() => {
     const handleScroll = () => {
-      const el = sectionRef.current;
+      const el = headingRef.current;
       if (!el) return;
 
       const rect = el.getBoundingClientRect();
-      const windowH = window.innerHeight;
+      const windowH = window.innerHeight || document.documentElement.clientHeight;
 
       /*
-       * We want progress = 0 when the section top enters the viewport,
-       * and progress = 1 when the section bottom leaves the viewport.
-       * Clamped to [0, 1].
+       * Animation Flow:
+       * - Starts (0%) when the heading enters the bottom 85% of the screen.
+       * - Ends (100%) when the heading reaches the top 25% of the screen.
+       * This creates a perfect word-by-word reveal as the user scrolls.
        */
-      const sectionH = rect.height;
-      // How many px of the section have scrolled past the top of the viewport
-      const scrolled = -rect.top + windowH * 0.15; // start animating 15% before section top
-      const raw = scrolled / (sectionH * 0.9);
+      const start = windowH * 0.55;
+      const end = windowH * 0.05;
+
+      const raw = (start - rect.top) / (start - end);
       setProgress(Math.min(1, Math.max(0, raw)));
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // run on mount in case already scrolled
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Use capture: true to guarantee the event fires regardless of scroll container
+    window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+    window.addEventListener('resize', handleScroll);
+    handleScroll(); // run on mount
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, { capture: true });
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
   /* How many words should be dark given current progress */
@@ -52,7 +60,7 @@ const AboutSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-[#EFEDE7] flex flex-col items-center overflow-hidden"
+      className="w-full bg-[#EDE7DE] flex flex-col items-center overflow-hidden"
     >
       {/* ══════════════════════════════════════════════════════════════════
           TOP ROW  — w:1440, h:378, pt:100px
@@ -94,6 +102,7 @@ const AboutSection = () => {
             }}
           >
             <h2
+              ref={headingRef}
               className="font-roundo font-medium lowercase"
               style={{
                 fontSize: '48px',
@@ -105,7 +114,7 @@ const AboutSection = () => {
                 <span
                   key={i}
                   style={{
-                    color: i < darkCount ? '#292929' : '#6B7E8F',
+                    color: i < darkCount ? '#334454' : '#6B7E8F',
                     transition: 'color 0.3s ease',
                     display: 'inline',
                   }}

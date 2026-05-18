@@ -16,7 +16,7 @@ const LogoMarquee = () => {
   const scrollLogos = [...logos, ...logos, ...logos, ...logos];
 
   return (
-    <section className="w-full bg-[#EFEDE7] py-[60px] flex flex-col items-center justify-center overflow-hidden">
+    <section className="w-full bg-[#EDE7DE] py-[60px] relative z-10 flex flex-col items-center justify-center overflow-hidden">
       <div className="w-[1200px] h-[111px] flex items-center overflow-hidden">
         <div className="flex animate-marquee whitespace-nowrap gap-[100px]">
           {scrollLogos.map((logo, index) => (

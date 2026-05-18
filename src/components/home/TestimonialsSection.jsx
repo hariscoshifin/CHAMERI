@@ -44,16 +44,21 @@ const SIDE_CARD_H = 467.5;
 const CARD_GAP    = 20;
 
 const TestimonialsSection = () => {
-  const [current, setCurrent]       = useState(0);
-  const [containerW, setContainerW] = useState(1440);
-  const [paused, setPaused]         = useState(false);
-  const wrapperRef = useRef(null);
   const total = TESTIMONIALS.length;
+  // Start at the first item of the middle copy (index = total)
+  const [current, setCurrent]       = useState(total);
+  const [containerW, setContainerW] = useState(1440);
+  const [transitionEnabled, setTransitionEnabled] = useState(true);
+  const wrapperRef = useRef(null);
 
-  /*
-   * Measure the carousel wrapper's actual rendered width.
-   * Since the wrapper is at section level (w-full), this equals the viewport width.
-   */
+  /* Create a tripled array for seamless infinite looping */
+  const extendedTestimonials = [
+    ...TESTIMONIALS,
+    ...TESTIMONIALS,
+    ...TESTIMONIALS
+  ];
+
+  /* Measure the carousel wrapper's actual rendered width. */
   useEffect(() => {
     const measure = () => {
       if (wrapperRef.current) setContainerW(wrapperRef.current.offsetWidth);
@@ -63,15 +68,36 @@ const TestimonialsSection = () => {
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  const next = useCallback(() => setCurrent((c) => (c + 1) % total), [total]);
-  const prev = useCallback(() => setCurrent((c) => (c - 1 + total) % total), [total]);
+  const next = useCallback(() => {
+    setCurrent((c) => c + 1);
+  }, []);
 
-  /* Continuous auto-play — pauses on hover */
+  const prev = useCallback(() => {
+    setCurrent((c) => c - 1);
+  }, []);
+
+  /* Handle transitionless loop-snapping after scroll completes */
+  const handleTransitionEnd = useCallback(() => {
+    if (current >= total * 2) {
+      setTransitionEnabled(false);
+      setCurrent(current - total);
+    } else if (current < total) {
+      setTransitionEnabled(false);
+      setCurrent(current + total);
+    }
+  }, [current, total]);
+
+  /* Re-enable transitions after the invisible snap has finished applying */
   useEffect(() => {
-    if (paused) return;
-    const id = setInterval(next, 3000);
-    return () => clearInterval(id);
-  }, [paused, next]);
+    if (!transitionEnabled) {
+      const rafId = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTransitionEnabled(true);
+        });
+      });
+      return () => cancelAnimationFrame(rafId);
+    }
+  }, [transitionEnabled]);
 
   /* Track translateX — centres the current card */
   const centerOffset = (containerW - CARD_W) / 2;
@@ -120,8 +146,6 @@ const TestimonialsSection = () => {
         ref={wrapperRef}
         className="relative overflow-hidden w-full"
         style={{ height: `${CARD_H}px`, marginTop: '0', marginBottom: '0' }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
       >
         {/* Sliding track */}
         <div
@@ -130,19 +154,19 @@ const TestimonialsSection = () => {
             alignItems: 'center',
             gap: `${CARD_GAP}px`,
             transform: `translateX(${trackX}px)`,
-            transition: 'transform 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: transitionEnabled ? 'transform 500ms cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
           }}
+          onTransitionEnd={handleTransitionEnd}
         >
-          {TESTIMONIALS.map((item, i) => {
+          {extendedTestimonials.map((item, i) => {
             const dist        = Math.abs(i - current);
-            const wrappedDist = Math.min(dist, total - dist);
-            const isCenter    = wrappedDist === 0;
-            const opacity     = isCenter ? 1 : wrappedDist === 1 ? 0.6 : 0;
+            const isCenter    = dist === 0;
+            const opacity     = isCenter ? 1 : dist === 1 ? 0.6 : 0;
             const cardH       = isCenter ? CARD_H : SIDE_CARD_H;
 
             return (
               <div
-                key={item.id}
+                key={i}
                 className="relative flex-shrink-0 overflow-hidden"
                 style={{
                   width: `${CARD_W}px`,
@@ -202,7 +226,7 @@ const TestimonialsSection = () => {
         {/* Left arrow — at left edge of centre card, top:279px per spec */}
         <button
           onClick={prev} aria-label="Previous"
-          className="absolute z-20 flex items-center justify-center bg-[#334454] hover:bg-[#6B859E] transition-colors duration-300"
+          className="absolute z-20 flex items-center justify-center bg-[#6B859E] hover:bg-[#334454] transition-colors duration-300"
           style={{
             width: '40px', height: '40px',
             borderRadius: '7.11px', padding: '8.89px',
@@ -238,20 +262,37 @@ const TestimonialsSection = () => {
         style={{ maxWidth: '1600px', paddingLeft: '70px', paddingRight: '70px', paddingTop: '24px', paddingBottom: '60px' }}
       >
         <button
-          className="group relative flex items-center justify-between overflow-hidden bg-[#6B859E] hover:bg-[#5a7187] transition-all duration-300"
-          style={{ width: '167px', height: '52px', borderRadius: '12px', paddingLeft: '12px', paddingRight: '8px' }}
+          className="group relative w-[167px] h-[52px] flex items-center bg-[#6B859E] hover:bg-[#4a6074] transition-colors duration-500 rounded-[12px] overflow-hidden cursor-pointer border-none"
         >
-          <span className="font-sans text-white font-medium text-[15px] transition-transform duration-300 group-hover:translate-x-[2px]">
-            Learn More
-          </span>
-          <div
-            className="flex items-center justify-center bg-white/20 rounded-[8px] flex-shrink-0 transition-all duration-300 group-hover:bg-white group-hover:scale-110 group-hover:translate-x-[3px]"
-            style={{ width: '36px', height: '36px' }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-              className="text-white group-hover:text-[#334454] transition-colors duration-300">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
+          {/* Sliding text container */}
+          <div className="absolute top-[14px] left-[12px] w-[97px] h-[23px] overflow-hidden">
+            <div className="flex flex-col transition-transform duration-500 ease-in-out group-hover:-translate-y-1/2">
+              <span className="font-sans text-[15px] font-medium text-white whitespace-nowrap h-[23px] flex items-center">
+                Learn More
+              </span>
+              <span className="font-sans text-[15px] font-medium text-white whitespace-nowrap h-[23px] flex items-center">
+                Learn More
+              </span>
+            </div>
+          </div>
+
+          {/* Arrow icon box */}
+          <div className="absolute right-[12px] w-[30px] h-[30px] rounded-[7px] bg-white group-hover:bg-[#EDE7DE] transition-colors duration-500 overflow-hidden">
+            
+            {/* Original Arrow - Flies out to the right */}
+            <div className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-in-out group-hover:translate-x-full">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#6B859E] group-hover:text-[#4a6074] transition-colors duration-500">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </div>
+
+            {/* New Arrow - Comes in from the left */}
+            <div className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-in-out -translate-x-full group-hover:translate-x-0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#6B859E] group-hover:text-[#4a6074] transition-colors duration-500">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </div>
+
           </div>
         </button>
       </div>

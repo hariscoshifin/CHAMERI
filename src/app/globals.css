@@ -28,6 +28,7 @@
     from {
       transform: translateX(0);
     }
+
     to {
       transform: translateX(-50%);
     }
@@ -61,6 +62,7 @@ body {
 .contact-phone-input {
   width: 100%;
 }
+
 .contact-phone-input .PhoneInputInput {
   flex: 1;
   background: transparent;
@@ -71,12 +73,15 @@ body {
   color: #334454;
   padding-left: 8px;
 }
+
 .contact-phone-input .PhoneInputInput::placeholder {
-  color: rgba(51,68,84,0.4);
+  color: rgba(51, 68, 84, 0.4);
 }
+
 .contact-phone-input .PhoneInputCountry {
   margin-right: 8px;
 }
+
 .contact-phone-input .PhoneInputCountrySelectArrow {
   opacity: 0.6;
   border-color: #334454;

@@ -89,40 +89,39 @@ const ContactCard = () => (
 
     {/* Button — spec: top:413.82, left:32.25, w:167, h:52, r:12, bg:#6B859E */}
     {/* Hover animation: arrow box slides right + scales up, bg darkens */}
-    <div className="absolute group" style={{ top: '413.82px', left: '32.25px' }}>
+    <div className="absolute" style={{ top: '413.82px', left: '32.25px' }}>
       <button
-        className="
-          relative flex items-center justify-between overflow-hidden
-          transition-all duration-300 ease-in-out
-          bg-[#6B859E] hover:bg-[#5a7187]
-          border border-white/20
-        "
-        style={{ width: '167px', height: '52px', borderRadius: '12px', paddingLeft: '20px', paddingRight: '8px' }}
+        className="group relative w-[167px] h-[52px] flex items-center bg-[#6B859E] hover:bg-[#334454] transition-colors duration-500 rounded-[12px] overflow-hidden cursor-pointer border-none"
       >
-        {/* Text */}
-        <span
-          className="font-sans text-white font-medium text-[14px] transition-transform duration-300 group-hover:translate-x-[3px]"
-        >
-          Learn More
-        </span>
+        {/* Sliding text container */}
+        <div className="absolute top-[14px] left-[12px] w-[97px] h-[23px] overflow-hidden">
+          <div className="flex flex-col transition-transform duration-500 ease-in-out group-hover:-translate-y-1/2">
+            <span className="font-sans text-[15px] font-medium text-white whitespace-nowrap h-[23px] flex items-center">
+              Learn More
+            </span>
+            <span className="font-sans text-[15px] font-medium text-white whitespace-nowrap h-[23px] flex items-center">
+              Learn More
+            </span>
+          </div>
+        </div>
 
-        {/* Arrow box — slides right + scales on hover */}
-        <div
-          className="
-            flex items-center justify-center flex-shrink-0
-            bg-white/20 rounded-[8px]
-            transition-all duration-300 ease-in-out
-            group-hover:bg-white group-hover:scale-110 group-hover:translate-x-[4px]
-          "
-          style={{ width: '36px', height: '36px' }}
-        >
-          <svg
-            width="14" height="14" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2.5"
-            className="text-white group-hover:text-[#334454] transition-colors duration-300 group-hover:translate-x-[2px] transition-transform"
-          >
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
+        {/* Arrow icon box */}
+        <div className="absolute right-[12px] w-[30px] h-[30px] rounded-[7px] bg-white group-hover:bg-[#EDE7DE] transition-colors duration-500 overflow-hidden">
+          
+          {/* Original Arrow - Flies out to the right */}
+          <div className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-in-out group-hover:translate-x-full">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#6B859E] group-hover:text-[#4a6074] transition-colors duration-500">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+
+          {/* New Arrow - Comes in from the left */}
+          <div className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-in-out -translate-x-full group-hover:translate-x-0">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#6B859E] group-hover:text-[#4a6074] transition-colors duration-500">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+
         </div>
       </button>
     </div>
@@ -140,16 +139,21 @@ const TeamSection = () => {
    */
   return (
     <section
-      className="w-full bg-[#EDE7DE]"
+      className="w-full bg-[#EDE7DE] flex justify-center"
       style={{
         minHeight: '1750px',
-        paddingTop: '47.75px',
-        paddingBottom: '47.75px',
-        paddingLeft: '82px',
-        paddingRight: '72px',
       }}
     >
-      <div className="flex items-start" style={{ gap: '42px' }}>
+      <div 
+        className="w-full max-w-[1440px] flex items-start"
+        style={{ 
+          paddingTop: '47.75px',
+          paddingBottom: '47.75px',
+          paddingLeft: '82px',
+          paddingRight: '72px',
+          gap: '20px' 
+        }}
+      >
 
         {/* ══ LEFT: Sticky Sidebar ══════════════════════════════════════ */}
         {/* w:422, pt:48, gap:26, sticky top:47.75 */}
