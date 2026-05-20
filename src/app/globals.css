@@ -22,6 +22,16 @@
   --font-mono: var(--font-geist-mono);
   --font-roundo: var(--font-roundo);
   --font-outfit: var(--font-outfit);
+  
+  /* ── Custom Screens / Breakpoints ───────── */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  --breakpoint-3xl: 1440px;
+  --breakpoint-4xl: 1920px;
+
   --animate-marquee: marquee 30s linear infinite;
 
   @keyframes marquee {

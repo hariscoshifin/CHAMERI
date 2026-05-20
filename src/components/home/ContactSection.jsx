@@ -24,12 +24,13 @@ const ContactSection = () => {
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   return (
-    <section className="w-full bg-[#EDE7DE]">
+    <section className="w-full bg-[#EDE7DE] flex justify-center">
       {/* Main row: space-between, exact spec padding, centered container */}
       <div
-        className="flex flex-row justify-between mx-auto"
+        className="flex flex-row justify-between"
         style={{
-          maxWidth: '1440px',
+          width: '1440px',
+          height: '739px',
           paddingTop: '80px',
           paddingRight: '88px',
           paddingBottom: '51px',

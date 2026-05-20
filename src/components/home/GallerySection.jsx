@@ -6,10 +6,10 @@ import Image from 'next/image';
 /* ─── Gallery data ───────────────────────────────────────────────────── */
 const VILLAS = [
   { id: 1, name: 'VILLA 01', location: 'Calicut , Kerala', year: '2024', img: '/dummyimages/Frame 2121454280.png', alt: '/dummyimages/Container.png', side: 'left' },
-  { id: 2, name: 'Villa 1', location: 'Calicut, Kerala', year: '2025', img: '/dummyimages/Container.png', alt: '/dummyimages/Overlay.png', side: 'right' },
+  { id: 2, name: 'Villa 1', location: 'Calicut, Kerala', year: '2025', img: '/dummyimages/Container.png', alt: '/dummyimages/Frame 2121454280.png', side: 'right' },
   { id: 3, name: 'Villa No3', location: 'Calicut, Kerala', year: '2025', img: '/dummyimages/Overlay.png', alt: '/dummyimages/Frame 2121454280.png', side: 'left' },
-  { id: 4, name: 'Villa No4', location: 'Calicut, Kerala', year: '2024', img: '/dummyimages/Container.png', alt: '/dummyimages/Overlay.png', side: 'right' },
-  { id: 5, name: 'Villa No5', location: 'Lorum Ipsum sit', year: '2025', img: '/dummyimages/Overlay.png', alt: '/dummyimages/Container.png', side: 'right' },
+  { id: 4, name: 'Villa No4', location: 'Calicut, Kerala', year: '2024', img: '/dummyimages/Container.png', alt: '/dummyimages/Frame 2121454280.png', side: 'right' },
+  { id: 5, name: 'Villa No5', location: 'Lorum Ipsum sit', year: '2025', img: '/dummyimages/Overlay.png', alt: '/dummyimages/Frame 2121454280.png', side: 'right' },
   { id: 6, name: 'Villa No6', location: 'Lorum Ipsum sit consit', year: '2024', img: '/dummyimages/Frame 2121454280.png', alt: '/dummyimages/Overlay.png', side: 'left' },
   { id: 7, name: 'Villa No7', location: 'Lorum Ipsum consit', year: '2023', img: '/dummyimages/Container.png', alt: '/dummyimages/Frame 2121454280.png', side: 'right' },
 ];
@@ -27,12 +27,22 @@ const GalleryCard = ({ villa, containerWidth, containerHeight, imageWidth, image
         
         {/* Inner container for image and dark overlay, with overflow-hidden to clip the image */}
         <div className="absolute inset-0 rounded-[4px] overflow-hidden">
+          {/* Default Image */}
           <Image
             src={villa.img}
             alt={villa.name}
             fill
-            className="object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
+            className="object-cover transition-all duration-700 ease-in-out group-hover:scale-105 group-hover:opacity-0"
           />
+          {/* Hover Image */}
+          {villa.alt && (
+            <Image
+              src={villa.alt}
+              alt={`${villa.name} alternate`}
+              fill
+              className="object-cover transition-all duration-700 ease-in-out opacity-0 group-hover:scale-105 group-hover:opacity-100"
+            />
+          )}
 
           {/* "View Project" dark overlay on hover */}
           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500">

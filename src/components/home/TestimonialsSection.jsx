@@ -226,7 +226,7 @@ const TestimonialsSection = () => {
         {/* Left arrow — at left edge of centre card, top:279px per spec */}
         <button
           onClick={prev} aria-label="Previous"
-          className="absolute z-20 flex items-center justify-center bg-[#6B859E] hover:bg-[#334454] transition-colors duration-300"
+          className="absolute z-20 flex items-center justify-center bg-[#334454] hover:bg-[#6B859E] transition-colors duration-300"
           style={{
             width: '40px', height: '40px',
             borderRadius: '7.11px', padding: '8.89px',

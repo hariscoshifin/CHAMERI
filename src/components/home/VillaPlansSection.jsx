@@ -81,20 +81,34 @@ const VillaPlansSection = () => {
       {/* ------------------ */}
       
       {/* ── Bottom Content Overlay ── */}
-        <div className="absolute inset-0 flex flex-col items-center justify-end pb-[80px] bg-gradient-to-t from-black/60 via-transparent to-transparent">
-          <div className="flex flex-col items-center gap-[18.9px] pt-[37.79px]">
-            {/* Text: Geist 400, 20px, lh 19.6, ls -0.06, centered */}
-            <p
-              className="text-center text-white font-sans font-normal text-[20px] leading-[19.6px] tracking-[-0.06px]"
+        <div 
+          className="absolute inset-0 flex flex-col items-center justify-end bg-gradient-to-t from-black/60 via-transparent to-transparent"
+          style={{ width: '100%', height: '100%', paddingTop: '37.79px', paddingBottom: '37.79px', borderRadius: '15.12px' }}
+        >
+          <div 
+            className="flex flex-col items-center justify-end" 
+            style={{ width: '425.15px', maxWidth: '425.15px', height: '208.94px', gap: '18.97px' }}
+          >
+            {/* Text Container */}
+            <div 
+              className="flex items-center justify-center"
               style={{ width: '575.74px', height: '79px', paddingRight: '0.35px', paddingLeft: '0.36px' }}
             >
-              Discover crafted living spaces where modern design meets timeless comfort for every family with smart layouts bright views and premium details built to inspire daily today always now us
-            </p>
+              <p
+                className="text-center text-white font-sans font-normal m-0 flex items-center justify-center"
+                style={{ width: '575.03px', height: '79px', fontSize: '20px', lineHeight: '19.6px', letterSpacing: '-0.06px' }}
+              >
+                Discover crafted living spaces where modern design meets timeless comfort for every family with smart layouts bright views and premium details built to inspire daily today always now us
+              </p>
+            </div>
 
-            {/* Button: w-167 h-52, #6B859E */}
-            <button className="group relative w-[167px] h-[52px] flex items-center bg-[#6B859E] hover:bg-[#334454] transition-colors duration-500 rounded-[12px] overflow-hidden cursor-pointer border-none">
+            {/* Button */}
+            <button 
+              className="group relative flex items-center justify-center bg-[#6B859E] hover:bg-[#334454] transition-colors duration-500 rounded-[12px] overflow-hidden cursor-pointer border-none"
+              style={{ width: '167px', height: '52px' }}
+            >
               {/* Sliding text container */}
-              <div className="absolute top-[14px] left-[12px] w-[97px] h-[23px] overflow-hidden">
+              <div className="absolute top-[14.5px] left-[12px] w-[97px] h-[23px] overflow-hidden">
                 <div className="flex flex-col transition-transform duration-500 ease-in-out group-hover:-translate-y-1/2">
                   <span className="font-sans text-[15px] font-medium text-white whitespace-nowrap h-[23px] flex items-center">
                     Learn More

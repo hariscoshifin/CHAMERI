@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 
 const WhyChooseUs = () => {
+  const [activeCard, setActiveCard] = useState(null);
+
   const cards = [
     {
       img: '/dummyimages/Container.png',
@@ -55,21 +57,26 @@ const WhyChooseUs = () => {
       </div>
 
       {/* ── Feature Cards (Accordion Effect) ── */}
-      <div className="w-full max-w-[1280px] h-[360.5px] flex gap-[13px]">
-        {cards.map((card, i) => (
+      <div className="w-full max-w-[1280px] flex justify-center gap-[10px]">
+        {cards.map((card, i) => {
+          const isActive = activeCard === i;
+          
+          return (
           <div
             key={i}
-            className="group relative flex-1 h-full rounded-[8px] overflow-hidden transition-all duration-700 ease-in-out hover:flex-[2] cursor-pointer"
+            onMouseEnter={() => setActiveCard(i)}
+            style={{ width: isActive ? '458px' : '400px', height: '352.5px', padding: '37.5px' }}
+            className={`relative rounded-[8px] overflow-hidden transition-all duration-700 ease-in-out cursor-pointer flex-shrink-0`}
           >
             {/* Background Image */}
             <Image
               src={card.img}
               alt={card.title}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              className={`object-cover transition-transform duration-700 ${isActive ? 'scale-105' : 'scale-100'}`}
             />
             {/* Dark Overlay */}
-            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
+            <div className={`absolute inset-0 transition-colors duration-700 ${isActive ? 'bg-black/50' : 'bg-black/40'}`} />
 
             {/* Content Container — centers the inner block in the card */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -88,13 +95,13 @@ const WhyChooseUs = () => {
                 </h3>
 
                 {/* Description — visible on hover */}
-                <p className="font-sans font-normal text-[15px] leading-[22.5px] text-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 pointer-events-none">
+                <p className={`font-sans font-normal text-[15px] leading-[22.5px] text-white/80 transition-opacity duration-500 delay-100 pointer-events-none ${isActive ? 'opacity-100' : 'opacity-0'}`}>
                   {card.desc}
                 </p>
               </div>
             </div>
           </div>
-        ))}
+        )})}
       </div>
     </section>
   );

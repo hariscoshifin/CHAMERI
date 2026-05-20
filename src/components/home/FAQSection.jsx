@@ -23,12 +23,11 @@ const FAQSection = () => {
      * Main layout: max-w 1600, px 70, py 60, gap 24
      */
     <section
-      className="w-full bg-[#EDE7DE]"
-      style={{ maxWidth: '1600px', margin: '0 auto' }}
+      className="w-full bg-[#EDE7DE] flex justify-center"
     >
       <div
         className="w-full flex flex-col items-center"
-        style={{ padding: '60px 70px', gap: '24px' }}
+        style={{ maxWidth: '1600px', padding: '60px 70px', gap: '24px' }}
       >
 
         {/* ══ 1st div — Header (w 1300, h 171.8, gap 16) ══════════════ */}
@@ -66,36 +65,43 @@ const FAQSection = () => {
 
         {/* ══ 2nd div — FAQ accordion (w 1200, h 511) ═════════════════ */}
         <div
-          className="flex items-center justify-center"
-          style={{ width: '100%', maxWidth: '1200px' }}
+          className="flex items-start justify-center"
+          style={{ width: '1200px', height: '511px' }}
         >
           {/* Inner: w 1126, gap 8 */}
           <div
             className="flex flex-col"
-            style={{ width: '100%', maxWidth: '1126px', gap: '8px' }}
+            style={{ width: '1126px', height: '501.3px', gap: '8px' }}
           >
             {FAQS.map((faq, i) => {
               const isOpen = openIndex === i;
               return (
-                <div key={i}>
-                  {/*
-                   * Question row: w 1126, h 58, border-radius 4px
-                   * bg: #6B859E
-                   */}
+                <div
+                  key={i}
+                  className="flex flex-col transition-all duration-300 ease-in-out"
+                  style={{
+                    width: '1126px',
+                    height: isOpen ? '171.3px' : '58px',
+                    backgroundColor: '#6B859E',
+                    borderRadius: '4px',
+                    padding: isOpen ? '8px' : '5px 8px',
+                    gap: isOpen ? '16px' : '0px',
+                    overflow: 'hidden'
+                  }}
+                >
+                  {/* Question row */}
                   <button
                     onClick={() => toggle(i)}
-                    className="w-full flex items-center justify-between text-left"
+                    className="flex items-center justify-between text-left cursor-pointer border-none bg-transparent"
                     style={{
-                      height: '58px',
-                      borderRadius: isOpen ? '4px 4px 0 0' : '4px',
-                      backgroundColor: '#6B859E',
-                      paddingLeft: '16px',
-                      paddingRight: '16px',
+                      width: '1110px',
+                      height: '48px',
+                      paddingTop: '8px',
+                      paddingRight: '9px',
+                      paddingBottom: '8px',
+                      paddingLeft: '9px',
                     }}
                   >
-                    {/*
-                     * Question text: w 400, Geist 400 22px, lh 26.4, ls -0.44
-                     */}
                     <span
                       style={{
                         fontFamily: 'var(--font-geist-sans), sans-serif',
@@ -109,10 +115,10 @@ const FAQSection = () => {
                       {faq.q}
                     </span>
 
-                    {/* Toggle button: w 32, h 32, r 8, p 8 */}
+                    {/* Toggle button */}
                     <div
                       className="flex-shrink-0 flex items-center justify-center bg-white"
-                      style={{ width: '32px', height: '32px', borderRadius: '8px', padding: '8px' }}
+                      style={{ width: '32px', height: '32px', borderRadius: '8px' }}
                     >
                       <svg
                         width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -125,38 +131,35 @@ const FAQSection = () => {
                     </div>
                   </button>
 
-                  {/*
-                   * Answer panel: w 1110, pt 23.3, pr 16, pb 24, pl 16, r 4
-                   * bg: #334454 (darker shade when expanded)
-                   * Answer text: Geist 400 18px, lh 21.6, ls -0.36
-                   */}
+                  {/* Answer panel */}
                   <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'}`}
+                    className={`transition-all duration-300 ease-in-out`}
+                    style={{
+                      width: '1110px',
+                      height: isOpen ? '91.3px' : '0px',
+                      opacity: isOpen ? 1 : 0,
+                      backgroundColor: '#334454',
+                      borderRadius: '4px',
+                      paddingTop: isOpen ? '23.3px' : '0px',
+                      paddingRight: '16px',
+                      paddingBottom: isOpen ? '24px' : '0px',
+                      paddingLeft: '16px',
+                      overflow: 'hidden'
+                    }}
                   >
-                    <div
+                    <p
                       style={{
-                        backgroundColor: '#334454',
-                        borderRadius: '0 0 4px 4px',
-                        paddingTop: '23.3px',
-                        paddingRight: '16px',
-                        paddingBottom: '24px',
-                        paddingLeft: '16px',
+                        fontFamily: 'var(--font-geist-sans), sans-serif',
+                        fontWeight: 400,
+                        fontSize: '18px',
+                        lineHeight: '21.6px',
+                        letterSpacing: '-0.36px',
+                        color: 'rgba(255,255,255,0.85)',
+                        margin: 0
                       }}
                     >
-                      <p
-                        style={{
-                          fontFamily: 'var(--font-geist-sans), sans-serif',
-                          fontWeight: 400,
-                          fontSize: '18px',
-                          lineHeight: '21.6px',
-                          letterSpacing: '-0.36px',
-                          color: 'rgba(255,255,255,0.85)',
-                          maxWidth: '825.3px',
-                        }}
-                      >
-                        {faq.a}
-                      </p>
-                    </div>
+                      {faq.a}
+                    </p>
                   </div>
                 </div>
               );

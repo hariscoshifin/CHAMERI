@@ -63,61 +63,68 @@ const AboutSection = () => {
       className="w-full bg-[#EDE7DE] flex flex-col items-center overflow-hidden"
     >
       {/* ══════════════════════════════════════════════════════════════════
-          TOP ROW  — w:1440, h:378, pt:100px
+          TOP ROW
          ══════════════════════════════════════════════════════════════════ */}
       <div
-        className="w-full flex items-start justify-center"
-        style={{ minHeight: '378px', paddingTop: '100px' }}
+        className="
+          w-full flex items-start justify-center
+          pt-[40px] min-h-[200px]
+          md:pt-[60px]
+          lg:pt-[70px] lg:min-h-[240px]
+          xl:pt-[85px] xl:min-h-[300px]
+          3xl:pt-[100px] 3xl:min-h-[378px]
+          2xl:pt-[110px] 2xl:min-h-[400px]
+          4xl:pt-[133px] 4xl:min-h-[500px]
+        "
       >
-        {/* Inner: 1330px centered — gives ~55px natural inset from screen edges */}
         <div
-          className="w-full mx-auto flex justify-between items-start"
-          style={{
-            maxWidth: '1330px',
-            paddingLeft: '20px',
-            paddingRight: '20px',
-          }}
+          className="
+            w-full mx-auto flex flex-col md:flex-row justify-between items-start
+            px-5 gap-6
+            md:gap-0
+            lg:max-w-[960px] lg:px-8
+            xl:max-w-[1180px] xl:px-10
+            3xl:max-w-[1330px] 3xl:px-[60px]
+            2xl:max-w-[1420px] 2xl:px-[66px]
+            4xl:max-w-[1773px] 4xl:px-[80px]
+          "
         >
+
           {/* ── About Us Badge ─────────────────────────────────────────── */}
-          {/* w:112.6, h:20 */}
-          <div
-            className="flex items-center gap-[7.2px] flex-shrink-0"
-            style={{ width: '112.6px', height: '20px' }}
-          >
-            <div className="w-[10px] h-[10px] bg-[#1A1A1A] rounded-[2px] flex-shrink-0" />
-            <span
-              className="font-sans font-medium uppercase text-[#1A1A1A]"
-              style={{ fontSize: '11px', letterSpacing: '1px', lineHeight: '20px' }}
-            >
+          <div className="flex items-center flex-shrink-0 gap-[7.2px] w-[112.6px] h-[20px] 4xl:w-[150px] 4xl:h-[26px] 4xl:gap-[10px]">
+            <div className="bg-[#1A1A1A] rounded-[2px] flex-shrink-0 w-[10px] h-[10px] 4xl:w-[14px] 4xl:h-[14px]" />
+            <span className="font-sans font-medium uppercase text-[#1A1A1A] leading-[20px] text-[11px] tracking-[1px] 4xl:text-[14px]">
               About Us
             </span>
           </div>
 
           {/* ── Heading with scroll-driven word animation ───────────────── */}
-          {/* w:1023.73, h:231 */}
           <div
-            style={{
-              width: '945.73px',
-              maxWidth: '100%',
-            }}
+            className="
+              max-w-full w-full
+              lg:w-[672px]
+              xl:w-[840px]
+              3xl:w-[945px]
+              2xl:w-[1008px]
+              4xl:w-[1260px]
+            "
           >
             <h2
               ref={headingRef}
-              className="font-roundo font-medium lowercase"
-              style={{
-                fontSize: '48px',
-                lineHeight: '57.6px',
-                letterSpacing: '-2.4px',
-              }}
+              className="
+                font-roundo font-medium lowercase
+                text-[28px] leading-[34px] tracking-[-1px]
+                lg:text-[36px] lg:leading-[44px] lg:tracking-[-1.8px]
+                xl:text-[42px] lg:leading-[51px] xl:tracking-[-2.1px]
+                3xl:text-[48px] 3xl:leading-[57.6px] 3xl:tracking-[-2.4px]
+                2xl:text-[51px] 2xl:leading-[61px] 2xl:tracking-[-2.6px]
+                4xl:text-[64px] 4xl:leading-[76px] 4xl:tracking-[-3.2px]
+              "
             >
               {HEADING_WORDS.map((word, i) => (
                 <span
                   key={i}
-                  style={{
-                    color: i < darkCount ? '#334454' : '#6B7E8F',
-                    transition: 'color 0.3s ease',
-                    display: 'inline',
-                  }}
+                  className={`transition-colors duration-300 inline ${i < darkCount ? 'text-[#334454]' : 'text-[#6B7E8F]'}`}
                 >
                   {word}
                   {i < HEADING_WORDS.length - 1 ? ' ' : ''}
@@ -129,48 +136,55 @@ const AboutSection = () => {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════
-          STATS ROW  — w:1440, h:220, max-w:1440px
-          py:27px, px:66px, gap:57px
+          STATS ROW
          ══════════════════════════════════════════════════════════════════ */}
       <div
-        className="w-full mx-auto flex items-center justify-center"
-        style={{
-          maxWidth: '1440px',
-          paddingTop: '27px',
-          paddingBottom: '27px',
-          paddingLeft: '66px',
-          paddingRight: '66px',
-        }}
+        className="
+          w-full mx-auto flex items-center justify-center
+          py-4 px-5
+          lg:max-w-[1024px] lg:py-5 lg:px-8
+          xl:max-w-[1280px] xl:py-6 xl:px-10
+          3xl:max-w-[1440px] 3xl:py-[27px] 3xl:px-[66px]
+          2xl:max-w-[1536px] 2xl:py-[30px] 2xl:px-[72px]
+          4xl:max-w-[1920px] 4xl:py-[36px] 4xl:px-[88px]
+        "
       >
-        {/* Inner stats card: w:1288, h:166, pt:20px, border-radius:14.4px */}
         <div
-          className="w-full flex items-center justify-between"
-          style={{
-            maxWidth: '1288px',
-            minHeight: '166px',
-            paddingTop: '20px',
-            borderRadius: '14.4px',
-          }}
+          className="
+            w-full flex flex-wrap md:flex-nowrap items-center justify-between
+            rounded-[14.4px] gap-8 md:gap-0
+            pt-[10px] min-h-[100px]
+            lg:max-w-[900px] lg:pt-[14px] lg:min-h-[130px]
+            xl:max-w-[1100px] xl:pt-[18px] xl:min-h-[148px]
+            3xl:max-w-[1288px] 3xl:pt-[20px] 3xl:min-h-[166px]
+            2xl:max-w-[1374px] 2xl:pt-[22px] 2xl:min-h-[178px]
+            4xl:max-w-[1717px] 4xl:pt-[28px] 4xl:min-h-[220px]
+          "
         >
           {STATS.map((stat, i) => (
-            <div key={i} className="flex flex-col items-start">
+            <div key={i} className="flex flex-col items-start w-[45%] md:w-auto">
               <span
-                className="font-roundo font-medium text-[#1A1A1A]"
-                style={{
-                  fontSize: '45px',
-                  lineHeight: '45px',
-                  letterSpacing: '-0.9px',
-                }}
+                className="
+                  font-roundo font-medium text-[#1A1A1A] tracking-[-0.9px]
+                  text-[32px] leading-[32px]
+                  lg:text-[36px] lg:leading-[36px]
+                  xl:text-[40px] xl:leading-[40px]
+                  3xl:text-[45px] 3xl:leading-[45px]
+                  2xl:text-[48px] 2xl:leading-[48px]
+                  4xl:text-[60px] 4xl:leading-[60px]
+                "
               >
                 {stat.val}
               </span>
               <span
-                className="font-sans font-normal text-black/60 mt-2"
-                style={{
-                  fontSize: '16px',
-                  lineHeight: '19.44px',
-                  letterSpacing: '-0.32px',
-                }}
+                className="
+                  font-sans font-normal text-black/60 mt-2 tracking-[-0.32px]
+                  text-[14px] leading-[18px]
+                  xl:text-[15px] xl:leading-[18.5px]
+                  3xl:text-[16px] 3xl:leading-[19.44px]
+                  2xl:text-[17px] 2xl:leading-[20px]
+                  4xl:text-[21px] 4xl:leading-[26px]
+                "
               >
                 {stat.label}
               </span>
@@ -183,3 +197,5 @@ const AboutSection = () => {
 };
 
 export default AboutSection;
+
+
