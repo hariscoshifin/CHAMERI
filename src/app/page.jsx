@@ -21,7 +21,6 @@ export default function Home() {
         <HeroSection />
         <AboutSection />
         <LogoMarquee />
-      </div>
       <VillaPlansSection />
       <WhyChooseUs />
       <GallerySection />
@@ -30,6 +29,7 @@ export default function Home() {
       <FAQSection />
       <ContactSection />
       <Footer />
+      </div>
     </main>
   );
 }

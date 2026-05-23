@@ -60,40 +60,33 @@ const AboutSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-[#EDE7DE] flex flex-col items-center overflow-hidden"
+      className="w-full bg-[#EDE7DE] flex flex-col items-center overflow-hidden "
     >
-      {/* ══════════════════════════════════════════════════════════════════
+      <div className="
+        w-full mx-auto flex flex-col items-center
+        px-[20px] lg:px-0 3xl:px-[20px]
+        sm:max-w-[60%] md:max-w-[70%] lg:max-w-[80%] xl:max-w-[82%] 2xl:max-w-[84%] 3xl:max-w-[1480px] 3xl:w-[1330px] 4xl:max-w-[84%]
+      ">
+        {/* ══════════════════════════════════════════════════════════════════
           TOP ROW
          ══════════════════════════════════════════════════════════════════ */}
-      <div
-        className="
-          w-full flex items-start justify-center
-          pt-[40px] min-h-[200px]
+        <div
+          className="
+          w-full flex items-start justify-between flex-col md:flex-row
+          pt-[40px] min-h-[300px] gap-6 md:gap-0
           md:pt-[60px]
           lg:pt-[70px] lg:min-h-[240px]
           xl:pt-[85px] xl:min-h-[300px]
+          2xl:pt-[190px] 2xl:min-h-[305px]
           3xl:pt-[100px] 3xl:min-h-[378px]
-          2xl:pt-[110px] 2xl:min-h-[400px]
           4xl:pt-[133px] 4xl:min-h-[500px]
         "
-      >
-        <div
-          className="
-            w-full mx-auto flex flex-col md:flex-row justify-between items-start
-            px-5 gap-6
-            md:gap-0
-            lg:max-w-[960px] lg:px-8
-            xl:max-w-[1180px] xl:px-10
-            3xl:max-w-[1330px] 3xl:px-[60px]
-            2xl:max-w-[1420px] 2xl:px-[66px]
-            4xl:max-w-[1773px] 4xl:px-[80px]
-          "
         >
 
           {/* ── About Us Badge ─────────────────────────────────────────── */}
-          <div className="flex items-center flex-shrink-0 gap-[7.2px] w-[112.6px] h-[20px] 4xl:w-[150px] 4xl:h-[26px] 4xl:gap-[10px]">
-            <div className="bg-[#1A1A1A] rounded-[2px] flex-shrink-0 w-[10px] h-[10px] 4xl:w-[14px] 4xl:h-[14px]" />
-            <span className="font-sans font-medium uppercase text-[#1A1A1A] leading-[20px] text-[11px] tracking-[1px] 4xl:text-[14px]">
+          <div className="flex items-center flex-shrink-0 gap-[7.2px] px-[7.2px] rounded-[90px] w-[112.6px] h-[20px] 4xl:w-[150px] 4xl:h-[26px] 4xl:gap-[10px] 4xl:px-[10px]">
+            <div className="bg-[#1A1A1A] rounded-[3px] p-[3.6px] flex-shrink-0 w-[14px] h-[14px] 4xl:w-[18px] 4xl:h-[18px] 4xl:p-[5px]" />
+            <span className="font-sans font-normal uppercase text-[#1A1A1A] leading-[19.44px] text-[16.2px] tracking-[-0.32px] w-[77px] h-[20px] flex items-center justify-center 4xl:text-[20px] 4xl:w-[95px] 4xl:h-[26px]">
               About Us
             </span>
           </div>
@@ -104,20 +97,20 @@ const AboutSection = () => {
               max-w-full w-full
               lg:w-[672px]
               xl:w-[840px]
-              3xl:w-[945px]
               2xl:w-[1008px]
+              3xl:w-[1074px]
               4xl:w-[1260px]
             "
           >
             <h2
               ref={headingRef}
               className="
-                font-roundo font-medium lowercase
+                font-roundo font-medium
                 text-[28px] leading-[34px] tracking-[-1px]
                 lg:text-[36px] lg:leading-[44px] lg:tracking-[-1.8px]
-                xl:text-[42px] lg:leading-[51px] xl:tracking-[-2.1px]
-                3xl:text-[48px] 3xl:leading-[57.6px] 3xl:tracking-[-2.4px]
+                xl:text-[42px] xl:leading-[51px] xl:tracking-[-2.1px]
                 2xl:text-[51px] 2xl:leading-[61px] 2xl:tracking-[-2.6px]
+                3xl:text-[48px] 3xl:leading-[57.6px] 3xl:tracking-[-2.4px]
                 4xl:text-[64px] 4xl:leading-[76px] 4xl:tracking-[-3.2px]
               "
             >
@@ -133,33 +126,21 @@ const AboutSection = () => {
             </h2>
           </div>
         </div>
-      </div>
 
-      {/* ══════════════════════════════════════════════════════════════════
+        {/* ══════════════════════════════════════════════════════════════════
           STATS ROW
          ══════════════════════════════════════════════════════════════════ */}
-      <div
-        className="
-          w-full mx-auto flex items-center justify-center
-          py-4 px-5
-          lg:max-w-[1024px] lg:py-5 lg:px-8
-          xl:max-w-[1280px] xl:py-6 xl:px-10
-          3xl:max-w-[1440px] 3xl:py-[27px] 3xl:px-[66px]
-          2xl:max-w-[1536px] 2xl:py-[30px] 2xl:px-[72px]
-          4xl:max-w-[1920px] 4xl:py-[36px] 4xl:px-[88px]
-        "
-      >
         <div
           className="
-            w-full flex flex-wrap md:flex-nowrap items-center justify-between
-            rounded-[14.4px] gap-8 md:gap-0
-            pt-[10px] min-h-[100px]
-            lg:max-w-[900px] lg:pt-[14px] lg:min-h-[130px]
-            xl:max-w-[1100px] xl:pt-[18px] xl:min-h-[148px]
-            3xl:max-w-[1288px] 3xl:pt-[20px] 3xl:min-h-[166px]
-            2xl:max-w-[1374px] 2xl:pt-[22px] 2xl:min-h-[178px]
-            4xl:max-w-[1717px] 4xl:pt-[28px] 4xl:min-h-[220px]
-          "
+          w-full flex flex-wrap md:flex-nowrap items-center justify-between
+          rounded-[14.4px] gap-8 md:gap-0
+          py-[14px] min-h-[100px]
+          lg:py-[20px] lg:min-h-[130px]
+          xl:py-[24px] xl:min-h-[148px]
+          3xl:py-[27px] 3xl:min-h-[166px]
+          2xl:py-[30px] 2xl:min-h-[178px]
+          4xl:py-[36px] 4xl:min-h-[220px]
+        "
         >
           {STATS.map((stat, i) => (
             <div key={i} className="flex flex-col items-start w-[45%] md:w-auto">
@@ -197,5 +178,3 @@ const AboutSection = () => {
 };
 
 export default AboutSection;
-
-
