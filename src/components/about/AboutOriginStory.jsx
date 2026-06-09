@@ -12,7 +12,7 @@ import React from 'react';
  */
 export default function AboutOriginStory() {
   return (
-    <section style={{ width: '100%', backgroundColor: '#EFEDE7' }}>
+    <section style={{ width: '100%', backgroundColor: '#EDE7DE' }}>
       <div
         style={{
           width: '100%',

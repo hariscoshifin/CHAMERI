@@ -1,6 +1,7 @@
 import AboutNavbar from '@/components/about/AboutNavbar';
 import AboutHeroSection from '@/components/about/AboutHeroSection';
 import AboutOriginStory from '@/components/about/AboutOriginStory';
+import AboutFounderNote from '@/components/about/AboutFounderNote';
 import Footer from '@/components/common/Footer';
 
 export const metadata = {
@@ -20,6 +21,9 @@ export default function AboutPage() {
 
       {/* ── Origin Story ──────────────────────────────────────────────── */}
       <AboutOriginStory />
+
+      {/* ── Founder Note ──────────────────────────────────────────────── */}
+      <AboutFounderNote />
 
       {/* ── Footer ────────────────────────────────────────────────────── */}
       <Footer />
