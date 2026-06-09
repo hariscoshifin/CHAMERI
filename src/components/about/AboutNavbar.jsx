@@ -23,7 +23,7 @@ export default function AboutNavbar() {
         left: 0,
         width: '100%',
         height: '84px',
-        background: '#D8D8D8',
+        background: '#EDE7DE',
         zIndex: 50,
         display: 'flex',
         alignItems: 'center',

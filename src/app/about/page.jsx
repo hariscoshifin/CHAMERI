@@ -1,5 +1,6 @@
 import AboutNavbar from '@/components/about/AboutNavbar';
 import AboutHeroSection from '@/components/about/AboutHeroSection';
+import AboutOriginStory from '@/components/about/AboutOriginStory';
 import Footer from '@/components/common/Footer';
 
 export const metadata = {
@@ -16,6 +17,9 @@ export default function AboutPage() {
 
       {/* ── Hero: Full-width image + headline ─────────────────────────── */}
       <AboutHeroSection />
+
+      {/* ── Origin Story ──────────────────────────────────────────────── */}
+      <AboutOriginStory />
 
       {/* ── Footer ────────────────────────────────────────────────────── */}
       <Footer />
