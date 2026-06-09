@@ -2,6 +2,8 @@ import AboutNavbar from '@/components/about/AboutNavbar';
 import AboutHeroSection from '@/components/about/AboutHeroSection';
 import AboutOriginStory from '@/components/about/AboutOriginStory';
 import AboutFounderNote from '@/components/about/AboutFounderNote';
+import AboutLogoSection from '@/components/about/AboutLogoSection';
+import AboutSpecialSection from '@/components/about/AboutSpecialSection';
 import Footer from '@/components/common/Footer';
 
 export const metadata = {
@@ -24,6 +26,12 @@ export default function AboutPage() {
 
       {/* ── Founder Note ──────────────────────────────────────────────── */}
       <AboutFounderNote />
+
+      {/* ── Logo Marquee ──────────────────────────────────────────────── */}
+      <AboutLogoSection />
+
+      {/* ── What Makes Us Special (Scroll Interactive) ────────────────── */}
+      <AboutSpecialSection />
 
       {/* ── Footer ────────────────────────────────────────────────────── */}
       <Footer />
