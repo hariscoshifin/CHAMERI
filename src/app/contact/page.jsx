@@ -2,6 +2,7 @@ import Navbar from "@/components/common/Navbar";
 import ContactPageForm from "@/components/contact/ContactPageForm";
 import Footer from "@/components/common/Footer";
 import ContactHero from "@/components/contact/ContactHero";
+import ContactLocations from "@/components/contact/ContactLocations";
 
 export const metadata = {
   title: "Contact Us — Chameri Premium Villa Residences",
@@ -16,6 +17,7 @@ export default function ContactPage() {
 
       <ContactHero />
 
+      <ContactLocations />
 
       <ContactPageForm />
 
