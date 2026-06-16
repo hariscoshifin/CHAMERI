@@ -1,0 +1,141 @@
+'use client';
+
+import Image from 'next/image';
+
+const col1 = [
+  { id: 1, src: '/dummyimages/Figure → Hepburn-20-480x320.jpg.svg', alt: 'Gallery Image 1', w: 441, h: 512 },
+  { id: 3, src: '/dummyimages/e273958d502607f06d62edd61792f48b69b84f3e.jpg', alt: 'Gallery Image 3', w: 441, h: 483 },
+  { id: 6, src: '/dummyimages/ab2a95a06e83c0793c45aa84bc54cd800e1c8716.jpg', alt: 'Gallery Image 6', w: 441, h: 489 },
+];
+
+const col2 = [
+  { id: 2, src: '/dummyimages/Figure → Argo-5-480x720.jpg.svg', alt: 'Gallery Image 2', w: 349, h: 336 },
+  { id: 4, src: '/dummyimages/b41115b835e2232a8e61bd8d04a193c1d7a5d351.png', alt: 'Gallery Image 4', w: 349, h: 384 },
+  { id: 10, src: '/dummyimages/81b44908c049fd8e0792ca40e0fdee715ba1f7b0.jpg', alt: 'Gallery Image 10', w: 349, h: 433 },
+  { id: 9, src: '/dummyimages/87e89594da613bb98c472da2cf1f7376200c358b.jpg', alt: 'Gallery Image 9', w: 348, h: 301 },
+];
+
+const col3 = [
+  { id: 5, src: '/dummyimages/af18e0d9d8fdfe4f4a5d97f4fbf9edd12b1ff9df.png', alt: 'Gallery Image 5', w: 441, h: 512 },
+  { id: 7, src: '/dummyimages/6bdc232e1c143f702a3a37c1909ea6a7c38d0002.png', alt: 'Gallery Image 7', w: 440, h: 449 },
+  { id: 8, src: '/dummyimages/4366c570846f17b0de12329eb1fab383893fbc5c.jpg', alt: 'Gallery Image 8', w: 440, h: 522 },
+];
+
+export default function GalleryGrid() {
+  return (
+    <section className="w-full flex flex-col items-center" style={{ backgroundColor: '#EDE7DE' }}>
+      
+      {/* Header Container */}
+      <div 
+        className="w-full flex justify-between items-start"
+        style={{
+          maxWidth: 'clamp(375px, 100vw, 1920px)',
+          paddingTop: 'clamp(19px, 1.3vw, 19px)',
+          paddingBottom: 'clamp(20px, 8.48vw, 48px)', 
+          paddingLeft: 'clamp(20px, 5.13vw, 74px)',
+          paddingRight: 'clamp(20px, 5.13vw, 74px)',
+        }}
+      >
+        {/* Gallery Pill */}
+        <div 
+          className="flex items-center"
+          style={{
+            padding: '7.2px 14px',
+            borderRadius: '90px',
+            gap: '10px',
+            backgroundColor: '#EDE7DE',
+          }}
+        >
+          <div 
+            style={{
+              width: 'clamp(14px, 1.12vw, 19px)',
+              height: 'clamp(14px, 1.12vw, 19px)',
+              borderRadius: '3px',
+              backgroundColor: '#334454',
+            }}
+          />
+          <span 
+            style={{
+              fontFamily: "var(--font-geist), 'Geist', sans-serif",
+              fontWeight: 400,
+              fontSize: 'clamp(16.2px, 1.12vw, 22px)',
+              lineHeight: 'clamp(19.44px, 1.12vw, 19px)',
+              letterSpacing: '-0.32px',
+              textTransform: 'uppercase',
+              color: '#334454',
+            }}
+          >
+            Gallery
+          </span>
+        </div>
+
+        {/* Optional Filter Tabs (based on image context) */}
+        {/* <div className="hidden md:flex rounded overflow-hidden" style={{ backgroundColor: '#7A8B99' }}>
+          <button className="px-6 py-2 text-sm font-medium text-white" style={{ backgroundColor: '#334454' }}>Exterior</button>
+          <button className="px-6 py-2 text-sm font-medium text-white hover:bg-[#334454]/50 transition-colors">Interior</button>
+          <button className="px-6 py-2 text-sm font-medium text-white hover:bg-[#334454]/50 transition-colors">Amenities</button>
+        </div> */}
+      </div>
+
+      {/* Masonry Grid */}
+      <div 
+        className="w-full flex justify-center"
+        style={{
+          maxWidth: 'clamp(375px, 100vw, 1920px)',
+          paddingLeft: 'clamp(20px, 4.23vw, 61px)',
+          paddingRight: 'clamp(20px, 4.23vw, 61px)',
+          paddingBottom: 'clamp(30px, 3.54vw, 51px)'
+        }}
+      >
+        <div className="w-full flex flex-col md:flex-row" style={{ gap: 'clamp(15px, 2.08vw, 30px)' }}>
+          
+          {/* Column 1 */}
+          <div className="flex flex-col flex-1" style={{ gap: 'clamp(15px, 2.08vw, 30px)', flexBasis: '30.625%' }}>
+            {col1.map((img) => (
+              <div key={img.id} className="relative w-full overflow-hidden" style={{ aspectRatio: `${img.w} / ${img.h}` }}>
+                <Image 
+                  src={img.src} 
+                  alt={img.alt} 
+                  fill 
+                  sizes="(max-width: 768px) 100vw, 30vw"
+                  className="object-cover hover:scale-105 transition-transform duration-700 ease-out" 
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Column 2 */}
+          <div className="flex flex-col flex-1" style={{ gap: 'clamp(15px, 2.08vw, 30px)', flexBasis: '24.236%' }}>
+            {col2.map((img) => (
+              <div key={img.id} className="relative w-full overflow-hidden" style={{ aspectRatio: `${img.w} / ${img.h}` }}>
+                <Image 
+                  src={img.src} 
+                  alt={img.alt} 
+                  fill 
+                  sizes="(max-width: 768px) 100vw, 24vw"
+                  className="object-cover hover:scale-105 transition-transform duration-700 ease-out" 
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Column 3 */}
+          <div className="flex flex-col flex-1" style={{ gap: 'clamp(15px, 2.08vw, 30px)', flexBasis: '30.625%' }}>
+            {col3.map((img) => (
+              <div key={img.id} className="relative w-full overflow-hidden" style={{ aspectRatio: `${img.w} / ${img.h}` }}>
+                <Image 
+                  src={img.src} 
+                  alt={img.alt} 
+                  fill 
+                  sizes="(max-width: 768px) 100vw, 30vw"
+                  className="object-cover hover:scale-105 transition-transform duration-700 ease-out" 
+                />
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
