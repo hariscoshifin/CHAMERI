@@ -1,4 +1,4 @@
-import Navbar from "@/components/common/Navbar";
+import NewNavbar from "@/components/common/NewNavbar";
 import Footer from "@/components/common/Footer";
 import GalleryHero from "@/components/gallery/GalleryHero";
 import GalleryGrid from "@/components/gallery/GalleryGrid";
@@ -12,7 +12,7 @@ export const metadata = {
 export default function GalleryPage() {
   return (
     <main className="min-h-screen relative bg-[#EDE7DE]">
-      <Navbar />
+      <NewNavbar />
       
       <GalleryHero />
 

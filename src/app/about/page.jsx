@@ -1,4 +1,4 @@
-import AboutNavbar from '@/components/about/AboutNavbar';
+import NewNavbar from '@/components/common/NewNavbar';
 import AboutHeroSection from '@/components/about/AboutHeroSection';
 import AboutOriginStory from '@/components/about/AboutOriginStory';
 import AboutFounderNote from '@/components/about/AboutFounderNote';
@@ -17,9 +17,9 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[#EFEDE7]">
-      {/* ── Sticky Navbar ─────────────────────────────────────────────── */}
-      <AboutNavbar />
+    <main className="min-h-screen bg-[#EFEDE7] relative">
+      {/* ── Navbar ────────────────────────────────────────────────────── */}
+      <NewNavbar />
 
       {/* ── Hero: Full-width image + headline ─────────────────────────── */}
       <AboutHeroSection />

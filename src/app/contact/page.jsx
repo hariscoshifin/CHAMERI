@@ -1,4 +1,4 @@
-import Navbar from "@/components/common/Navbar";
+import NewNavbar from "@/components/common/NewNavbar";
 import ContactPageForm from "@/components/contact/ContactPageForm";
 import Footer from "@/components/common/Footer";
 import ContactHero from "@/components/contact/ContactHero";
@@ -12,8 +12,8 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen">
-      <Navbar />
+    <main className="min-h-screen relative">
+      <NewNavbar />
 
       <ContactHero />
 

@@ -10,10 +10,14 @@ import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
 import Footer from "@/components/common/Footer";
 import GalleryNew from "@/components/home/GalleryNew";
+// import NewNavbar from "@/components/common/NewNavbar";
 
 export default function Home() {
   return (
     <main>
+      {/* ── NewNavbar: position:fixed, hides on scroll-down, shows on scroll-up ── */}
+      {/* <NewNavbar /> */}
+
       {/* HeroSection owns its own sticky + fixed layers (200svh scroll space) */}
       <HeroSection />
 

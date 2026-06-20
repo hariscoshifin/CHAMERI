@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 
 const galleryData = [
   {
@@ -19,126 +19,132 @@ const galleryData = [
     id: 3,
     image: "/dummyimages/Overlay.png",
     text: "Crafting Timeless Villas &\nLandmark Spaces",
-  }
+  },
 ];
 
-function Slide({ slide, index, totalSlides, scrollYProgress }) {
-  const start = index / totalSlides;
-  const end = start + (1 / totalSlides);
-
-  let opacityInput, opacityValues;
-
-  // Crossfade logic: fade in slightly before `start` and fade out slightly before `end`
-  if (index === 0) {
-    opacityInput = [0, end - 0.05, end];
-    opacityValues = [1, 1, 0];
-  } else if (index === totalSlides - 1) {
-    opacityInput = [start - 0.05, start, 1];
-    opacityValues = [0, 1, 1];
-  } else {
-    opacityInput = [start - 0.05, start, end - 0.05, end];
-    opacityValues = [0, 1, 1, 0];
-  }
-
-  const opacity = useTransform(scrollYProgress, opacityInput, opacityValues);
-  // Slight zoom effect as user scrolls
-  const scale = useTransform(scrollYProgress, [start, end], [1, 1.05]);
-
-  return (
-    <motion.div
-      className="absolute inset-0 w-full h-full flex flex-col items-center justify-center"
-      style={{ opacity }}
-    >
-      {/* Background Image */}
-      <motion.div className="absolute inset-0 w-full h-full -z-20" style={{ scale }}>
-        <Image
-          src={slide.image}
-          alt={`Gallery Slide ${index + 1}`}
-          fill
-          sizes="100vw"
-          className="object-cover object-center"
-          priority={index === 0}
-        />
-      </motion.div>
-
-      {/* Dark Overlay (#00000033 = 20% opacity black) */}
-      <div
-        className="absolute inset-0 w-full h-full pointer-events-none -z-10"
-        style={{
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-        }}
-      />
-
-      {/* Main Container */}
-      <div
-        className="relative z-10 flex flex-col items-center justify-center text-center"
-        style={{
-          width: 'clamp(300px, 65.27vw, 940px)',
-          // Removed height clamp to allow content to dictate natural height, but added padding to mimic spacing
-        }}
-      >
-        <h2
-          className="text-white whitespace-pre-wrap"
-          style={{
-            fontFamily: "var(--font-roundo), 'Roundo', system-ui, sans-serif",
-            fontWeight: 500,
-            width: 'clamp(300px, 46.36vw, 667.67px)',
-            fontSize: 'clamp(32px, 4.16vw, 60px)',
-            lineHeight: 'clamp(40px, 4.59vw, 66.14px)',
-            letterSpacing: 'clamp(-3.05px, -0.21vw, -1px)',
-            margin: 0,
-            padding: 0
-          }}
-        >
-          {slide.text}
-        </h2>
-      </div>
-    </motion.div>
-  );
-}
+const N = galleryData.length;
 
 export default function GalleryHero() {
   const containerRef = useRef(null);
-
-  // The scroll area height. 300vh gives a 100vh scrub area per slide.
-  const heightStr = `${galleryData.length * 100}vh`;
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"]
+    offset: ['start start', 'end end'],
   });
 
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+    const clamped = Math.max(0, Math.min(0.9999, latest));
+    setActiveIndex(Math.floor(clamped * N));
+  });
+
+  // Sync on mount in case the page loads mid-section
+  useEffect(() => {
+    const clamped = Math.max(0, Math.min(0.9999, scrollYProgress.get()));
+    setActiveIndex(Math.floor(clamped * N));
+  }, [scrollYProgress]);
+
   return (
-    <div ref={containerRef} className="relative w-full" style={{ height: heightStr }}>
-      {/* Sticky section that stays pinned to viewport */}
+    // Outer scroll track: N × 100vh gives each slide ~1 viewport of scroll travel
+    <div
+      ref={containerRef}
+      className="relative w-full"
+      style={{ height: `${N * 100}vh` }}
+    >
+      {/* ── Sticky viewport ──────────────────────────────────────────── */}
       <section
-        className="sticky top-0 w-full flex items-center justify-center overflow-hidden bg-black"
+        className="sticky top-0 w-full overflow-hidden bg-black"
         style={{ height: '100vh' }}
       >
-        {/* Navbar Layout Placeholder (Mimicking Figma specs) */}
-        <div
-          className="absolute top-0 left-0 w-full z-50 flex items-center justify-between"
-          style={{
-            height: 'clamp(60px, 6.69vw, 96.38px)',
-            paddingTop: 'clamp(10px, 0.97vw, 14px)',
-            paddingBottom: 'clamp(10px, 0.97vw, 14px)',
-            paddingLeft: 'clamp(20px, 5.55vw, 80px)',
-            paddingRight: 'clamp(20px, 5.55vw, 80px)',
-            gap: '10px'
-          }}
-        >
-          {/* Logo / Menu would go here */}
+
+        {/*
+          ── IMAGE STACK ──────────────────────────────────────────────
+          All images share the same absolute position (inset-0).
+          Only one is mounted at a time via AnimatePresence.
+
+          Enter : opacity 0 → 1,  scale 0.96 → 1    (0.5 s easeOut)
+          Exit  : opacity 1 → 0,  scale 1   → 1.04  (0.4 s easeIn)
+        */}
+        <div className="absolute inset-0">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`img-${activeIndex}`}
+              className="absolute inset-0"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+              }}
+              exit={{
+                opacity: 0,
+                scale: 1.04,
+                transition: { duration: 0.4, ease: [0.4, 0, 1, 1] },
+              }}
+            >
+              <Image
+                src={galleryData[activeIndex].image}
+                alt={`Gallery Slide ${activeIndex + 1}`}
+                fill
+                sizes="100vw"
+                className="object-cover object-center"
+                priority={activeIndex === 0}
+              />
+
+              {/* Dark overlay – travels with the image */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ backgroundColor: 'rgba(0,0,0,0.2)' }}
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        {galleryData.map((slide, index) => (
-          <Slide
-            key={slide.id}
-            slide={slide}
-            index={index}
-            totalSlides={galleryData.length}
-            scrollYProgress={scrollYProgress}
-          />
-        ))}
+        {/*
+          ── TEXT CONTAINER ───────────────────────────────────────────
+          The container itself never moves (fixed centred position).
+          Only the heading inside animates.
+
+          Enter : opacity 0 → 1,  y  20px → 0    (0.5 s easeOut)
+          Exit  : opacity 1 → 0,  y  0    → -20px (0.4 s easeIn)
+        */}
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+          <div
+            className="flex flex-col items-center justify-center text-center"
+            style={{ width: 'clamp(300px, 65.27vw, 940px)' }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.h2
+                key={`text-${activeIndex}`}
+                className="text-white whitespace-pre-wrap"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.5, ease: 'easeOut' },
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -20,
+                  transition: { duration: 0.4, ease: 'easeIn' },
+                }}
+                style={{
+                  fontFamily: "var(--font-roundo),'Roundo',system-ui,sans-serif",
+                  fontWeight: 500,
+                  width: 'clamp(300px, 46.36vw, 667.67px)',
+                  fontSize: 'clamp(32px, 4.16vw, 60px)',
+                  lineHeight: 'clamp(40px, 4.59vw, 66.14px)',
+                  letterSpacing: 'clamp(-3.05px, -0.21vw, -1px)',
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
+                {galleryData[activeIndex].text}
+              </motion.h2>
+            </AnimatePresence>
+          </div>
+        </div>
+
       </section>
     </div>
   );

@@ -53,10 +53,13 @@
   padding: 0;
 }
 
-html,
-body {
+html {
   height: 100%;
   scroll-behavior: smooth;
+}
+
+body {
+  height: 100%;
   overflow-x: hidden;
 }
 
