@@ -99,3 +99,12 @@ body {
   opacity: 0.6;
   border-color: #334454;
 }
+
+/* ── Hide scrollbar on horizontal scroll tracks ────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
