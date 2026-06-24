@@ -420,8 +420,8 @@ export default function KiwanoLuxuryVillas() {
       >
         <div
           style={{
-            width: "100%",
-            maxWidth: "1260px",
+            // width: "100%",
+            maxWidth: "clamp(375px, 89.2vw, 1920px)",
             display: "flex",
             flexDirection: "row",
             alignItems: "flex-start",
@@ -432,7 +432,7 @@ export default function KiwanoLuxuryVillas() {
           }}
         >
           {/* Logo */}
-          <div style={{ width: "clamp(180px, 29.17vw, 420px)", flexShrink: 0 }}>
+          <div style={{ width: "clamp(160px, 29.17vw, 460px)", flexShrink: 0 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/icons/Kiwano-Logo-Color-2-Copy-e1772083713999-1024x219.png.svg"
@@ -447,7 +447,7 @@ export default function KiwanoLuxuryVillas() {
               style={{
                 fontFamily: "var(--font-geist-sans), 'Geist', system-ui, sans-serif",
                 fontWeight: 400,
-                fontSize: "clamp(15px, 1.67vw, 24px)",
+                fontSize: "clamp(15px, 1.67vw, 26px)",
                 lineHeight: "1.2",
                 letterSpacing: "-1.2px",
                 color: "#000000",
@@ -484,7 +484,7 @@ export default function KiwanoLuxuryVillas() {
           {/* Card */}
           <div
             style={{
-              width: "clamp(260px, 38.82vw, 559px)",
+              width: "clamp(260px, 38.82vw, 590px)",
               height: "clamp(200px, 30.76vw, 443px)",
               borderRadius: "8px",
               background: "#FFFFFF",
@@ -502,7 +502,7 @@ export default function KiwanoLuxuryVillas() {
               style={{
                 fontFamily: "var(--font-geist-sans), 'Geist', system-ui, sans-serif",
                 fontWeight: 400,
-                fontSize: "16px",
+                fontSize: "clamp(14px, 1.25vw, 18px)",
                 lineHeight: "121%",
                 color: "#000000",
                 margin: 0,
@@ -528,7 +528,7 @@ export default function KiwanoLuxuryVillas() {
                 style={{
                   fontFamily: "var(--font-geist-sans), 'Geist', system-ui, sans-serif",
                   fontWeight: 600,
-                  fontSize: "16px",
+                  fontSize: "clamp(14px, 1.25vw, 18px)",
                   lineHeight: "100%",
                   color: "#000000",
                 }}
