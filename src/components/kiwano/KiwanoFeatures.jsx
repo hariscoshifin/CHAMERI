@@ -157,7 +157,7 @@ export default function KiwanoFeatures() {
     <section
       style={{
         width:           "100%",
-        maxWidth:        "clamp(650px, 100vw, 1920px)",
+        maxWidth:        "clamp(450px, 100vw, 1920px)",
         margin:          "0 auto",
         minHeight:       "clamp(600px, 57.35vw, 825.8px)",
         paddingTop:      "clamp(32px, 4.167vw, 60px)",

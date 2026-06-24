@@ -1,159 +1,126 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useRef, useEffect } from "react";
+import { useScroll } from "framer-motion";
 import NewNavbar from "../common/NewNavbar";
 
 /**
- * ─────────────────────────────────────────────────────────────────────────────
- * KiwanoHero — Scroll-driven video hero section
- * ─────────────────────────────────────────────────────────────────────────────
+ * KiwanoHero — smooth scroll-driven video
  *
- * Layout (from Figma specs):
- *   Section  : 1440 × 905.55px
+ * Why lerp-in-rAF beats useSpring for video scrubbing
+ * ──────────────────────────────────────────────────────
+ * useSpring fires only when its value changes — if the user scrolls slowly
+ * the spring settles and stops firing, leaving gaps between seeks.
+ * A continuous requestAnimationFrame loop fires on *every* paint frame
+ * (60 / 120 Hz) so video.currentTime is always moving toward the target
+ * with no gaps. This is identical to what GSAP ScrollTrigger `scrub` does
+ * internally.
  *
- *   Text div : w:667.67  h:133  top:386.69  left:385.68
- *              font: Roundo 500  60px / 66.14px  ls:-3.05px  center
- *              Visible only when scroll progress ≥ 80%
+ * Lerp formula (runs every frame):
+ *   smooth += (target - smooth) × FACTOR
  *
- *   Video div: w:1440  h:905.55  left:0  background:#00000033
- *              Plays as the user scrolls (currentTime driven by scrollProgress)
- *
- * Scroll mechanics:
- *   - The section is made tall (300vh) so the user scrolls through it while
- *     the visual hero stays sticky (100vh).
- *   - scrollProgress = 0 → 1 over those 300vh.
- *   - video.currentTime = scrollProgress × video.duration.
- *   - Text opacity: 0 when progress < 0.80, fades in from 0.80 → 0.95.
- * ─────────────────────────────────────────────────────────────────────────────
+ * FACTOR = 0.06 → ~300 ms catch-up (cinematic, floaty)
+ * FACTOR = 0.10 → ~180 ms catch-up (balanced)
+ * FACTOR = 0.14 → ~120 ms catch-up (snappy)
  */
+
+const LERP_FACTOR = 0.08;
+
+const clamp     = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
 export default function KiwanoHero() {
-  const wrapperRef = useRef(null);   // the tall scroll wrapper
-  const videoRef   = useRef(null);   // the <video> element
-  const rafRef     = useRef(null);   // requestAnimationFrame id
+  const wrapperRef = useRef(null);
+  const videoRef   = useRef(null);
+  const textRef    = useRef(null);
 
-  const [scrollProgress, setScrollProgress] = useState(0);
+  // useScroll only to get the MotionValue — we read it imperatively inside rAF
+  const { scrollYProgress } = useScroll({
+    target: wrapperRef,
+    offset: ["start start", "end end"],
+  });
 
-  // ── Clamp helper ────────────────────────────────────────────────────────────
-  const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
-
-  // ── Smooth easing for text reveal ───────────────────────────────────────────
-  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-
-  // ── Scroll handler ─────────────────────────────────────────────────────────
-  const handleScroll = useCallback(() => {
-    if (!wrapperRef.current) return;
-
-    const wrapper = wrapperRef.current;
-    const rect    = wrapper.getBoundingClientRect();
-    const vh      = window.innerHeight;
-
-    // scrollable distance = total height of wrapper − one viewport
-    const totalScroll = wrapper.offsetHeight - vh;
-
-    // how far the top of wrapper has scrolled above the viewport top
-    const scrolled = clamp(-rect.top, 0, totalScroll);
-
-    const progress = totalScroll > 0 ? scrolled / totalScroll : 0;
-
-    setScrollProgress(progress);
-
-    // Drive the video
-    const video = videoRef.current;
-    if (video && video.duration && !isNaN(video.duration)) {
-      video.currentTime = progress * video.duration;
-    }
-  }, []);
-
-  // ── Attach / detach scroll listener ────────────────────────────────────────
+  // ── Continuous lerp loop ──────────────────────────────────────────────────
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    // Run once on mount to seed correct state
-    handleScroll();
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [handleScroll]);
-
-  // ── Pause video (we control playback via currentTime, not play/pause) ──────
-  useEffect(() => {
-    const video = videoRef.current;
+    const video  = videoRef.current;
+    const textEl = textRef.current;
     if (!video) return;
 
-    const handleLoaded = () => {
-      video.pause();
-      video.currentTime = 0;
-    };
+    let smooth = 0; // lerped progress, starts at 0
+    let rafId;
 
-    video.addEventListener("loadedmetadata", handleLoaded);
-    video.addEventListener("canplay", () => video.pause());
+    function loop() {
+      // 1. Read the instant scroll progress (no React, no state — just a number)
+      const raw = scrollYProgress.get();
 
-    return () => {
-      video.removeEventListener("loadedmetadata", handleLoaded);
-    };
-  }, []);
+      // 2. Lerp smoothed value toward raw — this is the easing
+      smooth += (raw - smooth) * LERP_FACTOR;
 
-  // ── Derived: text visibility ────────────────────────────────────────────────
-  // Text appears only after 80% scroll; fades in between 80% → 95%
-  const textProgress = clamp((scrollProgress - 0.8) / 0.15, 0, 1);
-  const textOpacity  = easeOutCubic(textProgress);
+      // 3. Scrub video — skip if delta is sub-millisecond (avoids decoder thrash)
+      if (video.duration && !isNaN(video.duration)) {
+        const t = clamp(smooth * video.duration, 0, video.duration);
+        if (Math.abs(video.currentTime - t) > 0.0008) {
+          video.currentTime = t;
+        }
+      }
 
-  // ── Section dimensions (pixel-perfect from Figma) ──────────────────────────
-  // The sticky visual is 1440 × 905.55; we replicate it as 100vw × 100vh
-  // The wrapper is made 300vh tall to give scroll room.
+      // 4. Drive text overlay imperatively (no React re-render)
+      if (textEl) {
+        const tp      = clamp((smooth - 0.8) / 0.15, 0, 1);
+        const opacity = easeOutCubic(tp);
+        const ty      = (1 - opacity) * 28;
+        textEl.style.opacity   = opacity;
+        textEl.style.transform = `translateY(${ty}px)`;
+      }
+
+      rafId = requestAnimationFrame(loop);
+    }
+
+    rafId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(rafId);
+  }, [scrollYProgress]);
+
+  // Keep video paused — currentTime scrubbing is our only playback control
+  const handleReady = (e) => {
+    e.currentTarget.pause();
+    e.currentTarget.currentTime = 0;
+  };
 
   return (
     <>
-      {/* ── NewNavbar ─────────────────────────────────────────────────────── */}
+      {/* ── Navbar ──────────────────────────────────────────────────────── */}
       <NewNavbar />
 
       {/*
-       * ── SCROLL WRAPPER ────────────────────────────────────────────────────
-       * 300vh tall → gives the user enough scroll distance to play the video
-       * from start to end.
+       * SCROLL WRAPPER — 300vh gives scroll travel while sticky child stays
+       * pinned. Scroll 0 → 100% maps the video from first → last frame.
        */}
       <div
         ref={wrapperRef}
-        style={{
-          position: "relative",
-          width:    "100%",
-          height:   "300vh",   // scroll travel
-        }}
+        style={{ position: "relative", width: "100%", height: "300vh" }}
       >
-        {/*
-         * ── STICKY VISUAL ─────────────────────────────────────────────────
-         * Stays fixed in the viewport while the user scrolls through the
-         * 300vh wrapper above.
-         *
-         * Figma: w:1440  h:905.55  angle:0  opacity:1
-         */}
+        {/* ── STICKY VISUAL ───────────────────────────────────────────── */}
         <div
           style={{
-            position:       "sticky",
-            top:            0,
-            left:           0,
-            width:          "100%",
-            height:         "100vh",
-            overflow:       "hidden",
+            position: "sticky",
+            top:      0,
+            width:    "100%",
+            height:   "100vh",
+            overflow: "hidden",
           }}
         >
-          {/* ── SECOND DIV: Video + dark overlay ─────────────────────────── */}
-          {/*
-           * Figma: background:#00000033  w:1440  h:905.55  left:0  opacity:1
-           */}
+          {/* Dark tint overlay */}
           <div
             style={{
-              position:   "absolute",
-              top:        0,
-              left:       0,
-              width:      "100%",
-              height:     "100%",
-              background: "#00000033",
-              zIndex:     1,
+              position:      "absolute",
+              inset:         0,
+              background:    "rgba(0,0,0,0.2)",
+              zIndex:        1,
+              pointerEvents: "none",
             }}
           />
 
-          {/* ── VIDEO ELEMENT ─────────────────────────────────────────────── */}
+          {/* ── VIDEO ─────────────────────────────────────────────────── */}
           <video
             ref={videoRef}
             src="/videos/kiwano-hero.mp4"
@@ -161,60 +128,56 @@ export default function KiwanoHero() {
             playsInline
             preload="auto"
             loop={false}
+            onLoadedMetadata={handleReady}
+            onCanPlay={(e) => e.currentTarget.pause()}
             style={{
-              position:   "absolute",
-              top:        0,
-              left:       0,
-              width:      "100%",
-              height:     "100%",
-              objectFit:  "cover",
-              zIndex:     0,
+              position:  "absolute",
+              inset:     0,
+              width:     "100%",
+              height:    "100%",
+              objectFit: "cover",
+              zIndex:    0,
             }}
           />
 
-          {/* ── FIRST DIV: Text ───────────────────────────────────────────── */}
           {/*
-           * Figma:
-           *   w:667.67  h:133  angle:0  opacity:0 (controlled by scroll)
-           *   top:386.69  left:385.68
-           *
-           * Converted to % of 1440×905.55 canvas:
-           *   top  = 386.69 / 905.55 = 42.70%
-           *   left = 385.68 / 1440   = 26.78%
-           *   width = 667.67 / 1440  = 46.37%
-           *
-           * Font: Roundo 500  60px / 66.14px  ls:-3.05px  center  middle
+           * ── TEXT OVERLAY ──────────────────────────────────────────
+           * Starts invisible (opacity 0, shifted down 28 px).
+           * The rAF loop writes opacity + transform directly to the
+           * element's style — zero React re-renders, zero layout cost.
+           * will-change promotes this div to its own GPU layer so
+           * opacity / translateY are purely compositor operations.
            */}
           <div
+            ref={textRef}
             style={{
-              position:        "absolute",
-              top:             "42.70%",
-              left:            "26.78%",
-              width:           "clamp(280px, 46.37vw, 667.67px)",
-              height:          "133px",
-              display:         "flex",
-              alignItems:      "center",
-              justifyContent:  "center",
-              zIndex:          2,
-              opacity:         textOpacity,
-              transform:       `translateY(${(1 - textOpacity) * 24}px)`,
-              transition:      "opacity 0.05s linear, transform 0.05s linear",
-              pointerEvents:   "none",
+              position:       "absolute",
+              top:            "42.70%",
+              left:           "26.78%",
+              width:          "clamp(280px, 50.37vw, 697.67px)",
+              height:         "133px",
+              display:        "flex",
+              alignItems:     "center",
+              justifyContent: "center",
+              zIndex:         2,
+              opacity:        0,
+              transform:      "translateY(28px)",
+              willChange:     "opacity, transform",
+              pointerEvents:  "none",
             }}
           >
             <h1
               style={{
                 fontFamily:    "var(--font-roundo), 'Roundo', system-ui, sans-serif",
                 fontWeight:    500,
-                fontStyle:     "normal",
                 fontSize:      "clamp(28px, 4.167vw, 60px)",
                 lineHeight:    "66.14px",
                 letterSpacing: "-3.05px",
                 textAlign:     "center",
                 color:         "#ffffff",
                 margin:        0,
-                padding:       0,
                 textShadow:    "0 4px 24px rgba(0,0,0,0.45)",
+                marginLeft:"clamp(40px, 8.58vw, 100px)"
               }}
             >
               Elegant Spaces For Built&nbsp;
@@ -222,26 +185,6 @@ export default function KiwanoHero() {
               Views Photo Frame
             </h1>
           </div>
-
-          {/* ── SCROLL PROGRESS INDICATOR (dev aid, remove in prod) ──────── */}
-          {/* Uncomment below to debug scroll progress
-          <div
-            style={{
-              position:   "absolute",
-              bottom:     24,
-              right:      24,
-              zIndex:     10,
-              color:      "white",
-              fontFamily: "monospace",
-              fontSize:   14,
-              background: "rgba(0,0,0,0.5)",
-              padding:    "4px 10px",
-              borderRadius: 6,
-            }}
-          >
-            {Math.round(scrollProgress * 100)}%
-          </div>
-          */}
         </div>
       </div>
     </>

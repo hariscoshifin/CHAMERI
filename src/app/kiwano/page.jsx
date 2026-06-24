@@ -1,4 +1,5 @@
 import KiwanoHero from '@/components/kiwano/KiwanoHero';
+import KiwanoLuxuryVillas from '@/components/kiwano/KiwanoLuxuryVillas';
 import Kiwano360Tour from '@/components/kiwano/Kiwano360Tour';
 import KiwanoFeatures from '@/components/kiwano/KiwanoFeatures';
 import KiwanoGallery from '@/components/kiwano/KiwanoGallery';
@@ -17,6 +18,9 @@ export default function KiwanoPage() {
     <main style={{ background: '#EDE7DE', minHeight: '100vh' }}>
       {/* ── Hero: Scroll-driven video + text reveal ───────────────── */}
       <KiwanoHero />
+
+      {/* ── Luxury Villas: Logo, floor plan, spec rows ────────────── */}
+      <KiwanoLuxuryVillas />
 
       {/* ── Features: Horizontal swipable cards ───────────────────── */}
       <KiwanoFeatures />
