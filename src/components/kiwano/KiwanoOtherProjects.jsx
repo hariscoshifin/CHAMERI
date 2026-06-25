@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 
 /**
@@ -9,6 +10,8 @@ import Image from "next/image";
  */
 
 export default function KiwanoOtherProjects() {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <section
       style={{
@@ -172,64 +175,80 @@ export default function KiwanoOtherProjects() {
               }}
             >
               <button
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
                 style={{
+                  position: "relative",
                   width: "100%",
                   height: "100%",
                   padding: 0,
                   border: "none",
-                  background: "transparent",
+                  background: isHovered ? "#334454" : "#6B859E",
                   display: "flex",
-                  alignItems: "stretch",
+                  alignItems: "center",
                   cursor: "pointer",
                   overflow: "hidden",
                   borderRadius: "10px",
+                  transition: "background 0.4s ease",
                 }}
               >
-                {/* Text Part */}
+                {/* Right panel — fades from white to button color on hover */}
                 <div
                   style={{
-                    background: "#6B859E",
+                    position: "absolute",
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: "41px",
+                    background: isHovered ? "#6B859E" : "#FFFFFF",
+                    transition: "background 0.4s ease",
+                    zIndex: 1,
+                  }}
+                />
+
+                {/* Text — slides right on hover */}
+                <span
+                  style={{
+                    position: "relative",
+                    zIndex: 2,
                     flex: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    textAlign: "center",
+                    fontFamily: "var(--font-geist-sans), 'Geist', system-ui, sans-serif",
+                    fontWeight: 500,
+                    fontSize: "12px",
+                    color: "#FFFFFF",
+                    letterSpacing: "0%",
+                    transform: isHovered ? "translateX(-4px)" : "translateX(0)",
+                    transition: "transform 0.4s ease",
                   }}
                 >
-                  <span
-                    style={{
-                      fontFamily: "var(--font-geist-sans), 'Geist', system-ui, sans-serif",
-                      fontWeight: 500,
-                      fontSize: "12px",
-                      color: "#FFFFFF",
-                      letterSpacing: "0%",
-                    }}
-                  >
-                    LEARN MORE
-                  </span>
-                </div>
+                  LEARN MORE
+                </span>
 
-                {/* Arrow Part */}
+                {/* Arrow — fixed position, color changes on hover */}
                 <div
                   style={{
-                    background: "#FFFFFF",
+                    position: "relative",
+                    zIndex: 2,
                     width: "41px",
+                    flexShrink: 0,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
                   <svg
-                    width="12"
-                    height="12"
+                    width="20"
+                    height="20"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#334454"
+                    stroke={isHovered ? "#FFFFFF" : "#334454"}
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    style={{ transition: "stroke 0.4s ease" }}
                   >
-                    <path d="M5 12h14" />
-                    <path d="M12 5l7 7-7 7" />
+                    <path d="M9 6l6 6-6 6" />
                   </svg>
                 </div>
               </button>

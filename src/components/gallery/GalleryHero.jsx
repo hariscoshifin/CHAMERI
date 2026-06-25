@@ -24,9 +24,27 @@ const galleryData = [
 
 const N = galleryData.length;
 
+// dir: 1 = scroll down (enter from bottom, exit to top)
+//      -1 = scroll up   (enter from top,    exit to bottom)
+const textVariants = {
+  initial: (dir) => ({ opacity: 0, y: dir * 50 }),
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+  },
+  exit: (dir) => ({
+    opacity: 0,
+    y: dir * -50,
+    transition: { duration: 0.4, ease: [0.4, 0, 1, 1] },
+  }),
+};
+
 export default function GalleryHero() {
   const containerRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const prevIndexRef = useRef(0);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -35,7 +53,12 @@ export default function GalleryHero() {
 
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
     const clamped = Math.max(0, Math.min(0.9999, latest));
-    setActiveIndex(Math.floor(clamped * N));
+    const newIndex = Math.floor(clamped * N);
+    if (newIndex !== prevIndexRef.current) {
+      setDirection(newIndex > prevIndexRef.current ? 1 : -1);
+      prevIndexRef.current = newIndex;
+      setActiveIndex(newIndex);
+    }
   });
 
   // Sync on mount in case the page loads mid-section
@@ -53,7 +76,7 @@ export default function GalleryHero() {
     >
       {/* ── Sticky viewport ──────────────────────────────────────────── */}
       <section
-        className="sticky top-0 w-full overflow-hidden bg-black"
+        className="sticky top-0 w-full overflow-hidden"
         style={{ height: '100vh' }}
       >
 
@@ -66,20 +89,18 @@ export default function GalleryHero() {
           Exit  : opacity 1 → 0,  scale 1   → 1.04  (0.4 s easeIn)
         */}
         <div className="absolute inset-0">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             <motion.div
               key={`img-${activeIndex}`}
               className="absolute inset-0"
-              initial={{ opacity: 0, scale: 0.96 }}
+              initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,
-                scale: 1,
-                transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+                transition: { duration: 0.6, ease: 'easeOut' },
               }}
               exit={{
                 opacity: 0,
-                scale: 1.04,
-                transition: { duration: 0.4, ease: [0.4, 0, 1, 1] },
+                transition: { duration: 0.6, ease: 'easeIn' },
               }}
             >
               <Image
@@ -90,44 +111,24 @@ export default function GalleryHero() {
                 className="object-cover object-center"
                 priority={activeIndex === 0}
               />
-
-              {/* Dark overlay – travels with the image */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ backgroundColor: 'rgba(0,0,0,0.2)' }}
-              />
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/*
-          ── TEXT CONTAINER ───────────────────────────────────────────
-          The container itself never moves (fixed centred position).
-          Only the heading inside animates.
-
-          Enter : opacity 0 → 1,  y  20px → 0    (0.5 s easeOut)
-          Exit  : opacity 1 → 0,  y  0    → -20px (0.4 s easeIn)
-        */}
         <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
           <div
             className="flex flex-col items-center justify-center text-center"
             style={{ width: 'clamp(300px, 65.27vw, 940px)' }}
           >
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" custom={direction}>
               <motion.h2
                 key={`text-${activeIndex}`}
+                custom={direction}
+                variants={textVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
                 className="text-white whitespace-pre-wrap"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  transition: { duration: 0.5, ease: 'easeOut' },
-                }}
-                exit={{
-                  opacity: 0,
-                  y: -20,
-                  transition: { duration: 0.4, ease: 'easeIn' },
-                }}
                 style={{
                   fontFamily: "var(--font-roundo),'Roundo',system-ui,sans-serif",
                   fontWeight: 500,
