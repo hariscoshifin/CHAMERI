@@ -1,115 +1,164 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { useScroll } from "framer-motion";
+import { useRef, useEffect, useCallback } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import NewNavbar from "../common/NewNavbar";
 
-/**
- * KiwanoHero — smooth scroll-driven video
- *
- * Why lerp-in-rAF beats useSpring for video scrubbing
- * ──────────────────────────────────────────────────────
- * useSpring fires only when its value changes — if the user scrolls slowly
- * the spring settles and stops firing, leaving gaps between seeks.
- * A continuous requestAnimationFrame loop fires on *every* paint frame
- * (60 / 120 Hz) so video.currentTime is always moving toward the target
- * with no gaps. This is identical to what GSAP ScrollTrigger `scrub` does
- * internally.
- *
- * Lerp formula (runs every frame):
- *   smooth += (target - smooth) × FACTOR
- *
- * FACTOR = 0.06 → ~300 ms catch-up (cinematic, floaty)
- * FACTOR = 0.10 → ~180 ms catch-up (balanced)
- * FACTOR = 0.14 → ~120 ms catch-up (snappy)
- */
+gsap.registerPlugin(ScrollTrigger);
 
-const LERP_FACTOR = 0.08;
+// Total frames extracted by FFmpeg (24 fps × 9.04 s = 217)
+const FRAME_COUNT = 217;
 
-const clamp     = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
-const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+// Lerp factor — how fast smoothProgress chases raw scroll.
+// 0.06 = cinematic/floaty  |  0.10 = balanced  |  0.16 = snappy
+const LERP = 0.08;
+
+// Draw image with object-fit:cover behaviour on the canvas
+function drawCover(ctx, img, cw, ch) {
+  const iw = img.naturalWidth  || img.width;
+  const ih = img.naturalHeight || img.height;
+  if (!iw || !ih) return;
+
+  const scale = Math.max(cw / iw, ch / ih);
+  const dw = iw * scale;
+  const dh = ih * scale;
+  const dx = (cw - dw) / 2;
+  const dy = (ch - dh) / 2;
+  ctx.drawImage(img, dx, dy, dw, dh);
+}
 
 export default function KiwanoHero({ hero }) {
-  const wrapperRef = useRef(null);
-  const videoRef   = useRef(null);
-  const textRef    = useRef(null);
+  const wrapperRef     = useRef(null);
+  const canvasRef      = useRef(null);
+  const textRef        = useRef(null);
+  const framesRef      = useRef([]);      // Image[]
+  const drawnFrameRef  = useRef(-1);      // last frame index drawn
 
-  // useScroll only to get the MotionValue — we read it imperatively inside rAF
-  const { scrollYProgress } = useScroll({
-    target: wrapperRef,
-    offset: ["start start", "end end"],
-  });
+  // Draw a specific frame index to the canvas
+  const drawFrame = useCallback((index) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const img = framesRef.current[index];
+    if (!img?.complete || img.naturalWidth === 0) return;
+    if (drawnFrameRef.current === index) return; // skip redraw of same frame
 
-  // ── Continuous lerp loop ──────────────────────────────────────────────────
+    const ctx = canvas.getContext("2d");
+    drawCover(ctx, img, canvas.width, canvas.height);
+    drawnFrameRef.current = index;
+  }, []);
+
+  // Resize canvas to match CSS pixel dimensions
+  const resizeCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    drawFrame(Math.max(drawnFrameRef.current, 0));
+  }, [drawFrame]);
+
   useEffect(() => {
-    const video  = videoRef.current;
-    const textEl = textRef.current;
-    if (!video) return;
+    const wrapper = wrapperRef.current;
+    const canvas  = canvasRef.current;
+    const textEl  = textRef.current;
+    if (!wrapper || !canvas) return;
 
-    let smooth = 0; // lerped progress, starts at 0
-    let rafId;
+    // ── 1. Size canvas ───────────────────────────────────────────────────
+    resizeCanvas();
+    const ro = new ResizeObserver(resizeCanvas);
+    ro.observe(canvas);
 
-    function loop() {
-      // 1. Read the instant scroll progress (no React, no state — just a number)
-      const raw = scrollYProgress.get();
+    // ── 2. Preload frames — frame 0 first (high priority), then the rest ─
+    //   Loading all 217 at once floods the browser queue and delays frame 0.
+    //   We load frame 0 with fetchPriority "high", draw it immediately, then
+    //   kick off the remaining 216 in parallel.
+    const makeImg = (i) => {
+      const img = new Image();
+      const n   = String(i + 1).padStart(4, "0");
+      img.src   = `/frames/kiwano/frame_${n}.jpg`;
+      framesRef.current[i] = img;
+      return img;
+    };
 
-      // 2. Lerp smoothed value toward raw — this is the easing
-      smooth += (raw - smooth) * LERP_FACTOR;
+    // Frame 0 — highest priority, draw as soon as it arrives
+    const first = makeImg(0);
+    first.fetchPriority = "high";
+    first.onload = () => drawFrame(0);
 
-      // 3. Scrub video — skip if delta is sub-millisecond (avoids decoder thrash)
-      if (video.duration && !isNaN(video.duration)) {
-        const t = clamp(smooth * video.duration, 0, video.duration);
-        if (Math.abs(video.currentTime - t) > 0.0008) {
-          video.currentTime = t;
-        }
-      }
+    // Remaining frames — load in parallel after a short yield so frame 0
+    // gets a head-start in the network queue
+    let restRAF = 0;
+    restRAF = requestAnimationFrame(() => {
+      for (let i = 1; i < FRAME_COUNT; i++) makeImg(i);
+    });
 
-      // 4. Drive text overlay imperatively (no React re-render)
+    // ── 3. Scroll tracking + lerp loop ──────────────────────────────────
+    let rawProgress    = 0;
+    let smoothProgress = 0;
+
+    const st = ScrollTrigger.create({
+      trigger: wrapper,
+      start:   "top top",
+      end:     "bottom bottom",
+      onUpdate: (self) => { rawProgress = self.progress; },
+    });
+
+    const onTick = () => {
+      // Lerp with settle guard (prevents infinite micro-seeks near the end)
+      const diff = rawProgress - smoothProgress;
+      smoothProgress = Math.abs(diff) < 0.0002
+        ? rawProgress
+        : smoothProgress + diff * LERP;
+
+      // Frame index
+      const idx = Math.min(
+        Math.floor(smoothProgress * (FRAME_COUNT - 1)),
+        FRAME_COUNT - 1
+      );
+      drawFrame(idx);
+
+      // Text overlay — fades in during the last 14 % of scroll travel
       if (textEl) {
-        const tp      = clamp((smooth - 0.8) / 0.15, 0, 1);
-        const opacity = easeOutCubic(tp);
-        const ty      = (1 - opacity) * 28;
-        textEl.style.opacity   = opacity;
-        textEl.style.transform = `translateY(${ty}px)`;
+        const tp    = Math.max(0, Math.min(1, (smoothProgress - 0.82) / 0.14));
+        const eased = tp * tp * (3 - 2 * tp); // smoothstep
+        textEl.style.opacity   = eased;
+        textEl.style.transform = `translateY(${(1 - eased) * 28}px)`;
       }
+    };
 
-      rafId = requestAnimationFrame(loop);
-    }
+    gsap.ticker.add(onTick);
+    gsap.ticker.fps(60);
 
-    rafId = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafId);
-  }, [scrollYProgress]);
-
-  // Keep video paused — currentTime scrubbing is our only playback control
-  const handleReady = (e) => {
-    e.currentTarget.pause();
-    e.currentTarget.currentTime = 0;
-  };
+    return () => {
+      cancelAnimationFrame(restRAF);
+      ro.disconnect();
+      st.kill();
+      gsap.ticker.remove(onTick);
+    };
+  }, [drawFrame, resizeCanvas]);
 
   return (
     <>
-      {/* ── Navbar ──────────────────────────────────────────────────────── */}
       <NewNavbar />
 
-      {/*
-       * SCROLL WRAPPER — 300vh gives scroll travel while sticky child stays
-       * pinned. Scroll 0 → 100% maps the video from first → last frame.
-       */}
+      {/* 300 vh wrapper — sticky canvas pins for ~200 vh of actual scroll */}
       <div
         ref={wrapperRef}
         style={{ position: "relative", width: "100%", height: "300vh" }}
       >
-        {/* ── STICKY VISUAL ───────────────────────────────────────────── */}
         <div
           style={{
-            position: "sticky",
-            top:      0,
-            width:    "100%",
-            height:   "100vh",
-            overflow: "hidden",
+            position:            "sticky",
+            top:                 0,
+            width:               "100%",
+            height:              "100vh",
+            overflow:            "hidden",
+            backgroundImage:     "url('/frames/kiwano/frame_0001.jpg')",
+            backgroundSize:      "cover",
+            backgroundPosition:  "center",
           }}
         >
-          {/* Dark tint overlay */}
+          {/* Dark tint */}
           <div
             style={{
               position:      "absolute",
@@ -120,34 +169,20 @@ export default function KiwanoHero({ hero }) {
             }}
           />
 
-          {/* ── VIDEO ─────────────────────────────────────────────────── */}
-          <video
-            ref={videoRef}
-            src={hero?.video || "/videos/kiwano-hero.mp4"}
-            muted
-            playsInline
-            preload="auto"
-            loop={false}
-            onLoadedMetadata={handleReady}
-            onCanPlay={(e) => e.currentTarget.pause()}
+          {/* Frame canvas — fills viewport, cover behaviour handled in drawCover() */}
+          <canvas
+            ref={canvasRef}
             style={{
-              position:  "absolute",
-              inset:     0,
-              width:     "100%",
-              height:    "100%",
-              objectFit: "cover",
-              zIndex:    0,
+              position: "absolute",
+              inset:    0,
+              width:    "100%",
+              height:   "100%",
+              zIndex:   0,
+              display:  "block",
             }}
           />
 
-          {/*
-           * ── TEXT OVERLAY ──────────────────────────────────────────
-           * Starts invisible (opacity 0, shifted down 28 px).
-           * The rAF loop writes opacity + transform directly to the
-           * element's style — zero React re-renders, zero layout cost.
-           * will-change promotes this div to its own GPU layer so
-           * opacity / translateY are purely compositor operations.
-           */}
+          {/* Text overlay — driven imperatively by the GSAP ticker */}
           <div
             ref={textRef}
             style={{
@@ -177,10 +212,10 @@ export default function KiwanoHero({ hero }) {
                 color:         "#ffffff",
                 margin:        0,
                 textShadow:    "0 4px 24px rgba(0,0,0,0.45)",
-                marginLeft:"clamp(40px, 8.58vw, 100px)"
+                marginLeft:    "clamp(40px, 8.58vw, 100px)",
               }}
             >
-              {hero?.heading || 'Elegant Spaces For Built Views Photo Frame'}
+              {hero?.heading || "Elegant Spaces For Built Views Photo Frame"}
             </h1>
           </div>
         </div>
