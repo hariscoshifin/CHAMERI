@@ -159,12 +159,12 @@ export default function AboutSpecialSection({ specialSection }) {
             </div>
 
             {/* Heading */}
-            <div style={{ width: 'clamp(300px, 45vw, 1000px)' }}>
+            <div style={{ width: 'clamp(200px, 45vw, 1300px)',marginLeft:'clamp(250px, 14vw, 400px)' }}>
               <h2
                 style={{
                   fontFamily: "var(--font-roundo,'Roundo'),system-ui,sans-serif",
                   fontWeight: 500,
-                  fontSize: 'clamp(28px, 4.16vw, 80px)',
+                  fontSize: 'clamp(24px, 4vw, 70px)',
                   lineHeight: 1.08,
                   letterSpacing: 'clamp(-2px, -0.18vw, -0.5px)',
                   color: '#1A1A1A',
@@ -278,6 +278,7 @@ export default function AboutSpecialSection({ specialSection }) {
                         lineHeight: 1.2,
                         margin: 0,
                         whiteSpace: 'pre-line',
+                        maxWidth:"clamp(80px,15vw,250px)"
                       }}
                     >
                       {feature.title}
@@ -298,7 +299,7 @@ export default function AboutSpecialSection({ specialSection }) {
                         fontSize: 'clamp(11px, 1.11vw, 21px)',
                         lineHeight: 1.35,
                         margin: 0,
-                        maxWidth: 'clamp(150px, 40vw, 669px)',
+                        maxWidth: 'clamp(150px, 45vw, 799px)',
                       }}
                     >
                       {feature.description}

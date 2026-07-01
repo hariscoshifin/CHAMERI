@@ -7,13 +7,13 @@ import dynamic from "next/dynamic";
 const AmenityMapLeaflet = dynamic(() => import("./AmenityMapLeaflet"), { ssr: false });
 
 const LEGEND_ITEMS = [
-  { color: "#C9A96E", label: "Project Site",       svg: null },
-  { color: "#DC2626", label: "Hospital",            svg: `<path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-2"/><path d="M9 11v4"/><path d="M7 13h4"/>` },
-  { color: "#2563EB", label: "School / Education",  svg: `<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>` },
-  { color: "#7C3AED", label: "Airport",             svg: `<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l5.5 4L5 15.5 3 15l-1 1 3 3 3 3 1-1-.5-2 3.5-3.5 4 5.5c.2.4.7.7 1.2.6l1.2-.7c.4-.2.7-.6.6-1.1z"/>` },
-  { color: "#059669", label: "Transport",           svg: `<rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/>` },
-  { color: "#D97706", label: "Shopping",            svg: `<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>` },
-  { color: "#6B7280", label: "Highway",             svg: `<path d="M4 22L10 2"/><path d="M20 22L14 2"/><path d="M12 6v2"/><path d="M12 12v2"/>` },
+  {  label: "Project Site",       svg: null },
+  {  label: "Hospital",            svg: `<path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-2"/><path d="M9 11v4"/><path d="M7 13h4"/>` },
+  {  label: "School / Education",  svg: `<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>` },
+  {  label: "Airport",             svg: `<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l5.5 4L5 15.5 3 15l-1 1 3 3 3 3 1-1-.5-2 3.5-3.5 4 5.5c.2.4.7.7 1.2.6l1.2-.7c.4-.2.7-.6.6-1.1z"/>` },
+  {  label: "Transport",           svg: `<rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/>` },
+  {  label: "Shopping",            svg: `<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>` },
+  {  label: "Highway",             svg: `<path d="M4 22L10 2"/><path d="M20 22L14 2"/><path d="M12 6v2"/><path d="M12 12v2"/>` },
 ];
 
 /**
@@ -240,7 +240,7 @@ export default function KiwanoAmenities({ amenities }) {
                 lineHeight: "clamp(26px, 3.425vw, 60px)",
                 letterSpacing: "-0.9px",
                 color: "#222F30",
-                maxWidth: "clamp(250px, 32.847vw, 473px)",
+                maxWidth: "clamp(250px, 33.847vw, 553px)",
                 margin: 0,
               }}
             >
@@ -500,36 +500,22 @@ export default function KiwanoAmenities({ amenities }) {
                 >
                   Legend
                 </span>
-                {LEGEND_ITEMS.map(({ color, label, svg }) => (
+                {LEGEND_ITEMS.map(({ label, svg }) => (
                   <div key={label} style={{ display: "flex", alignItems: "center", gap: "9px" }}>
-                    <div
-                      style={{
-                        width:           "20px",
-                        height:          "20px",
-                        borderRadius:    "50%",
-                        background:      color,
-                        border:          "2px solid white",
-                        flexShrink:      0,
-                        boxShadow:       `0 2px 6px rgba(0,0,0,.18)`,
-                        display:         "flex",
-                        alignItems:      "center",
-                        justifyContent:  "center",
-                      }}
-                    >
+                    <div style={{ width: "18px", height: "18px", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                       {svg ? (
                         <svg
-                          width="11" height="11"
+                          width="16" height="16"
                           viewBox="0 0 24 24"
                           fill="none"
-                          stroke="white"
+                          stroke="#334454"
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           dangerouslySetInnerHTML={{ __html: svg }}
                         />
                       ) : (
-                        /* Project site — gold star dot */
-                        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "white" }} />
+                        <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#C9A96E" }} />
                       )}
                     </div>
                     <span

@@ -28,35 +28,26 @@ const ICON_SVG = {
 const PROJECT_CENTER = [11.755, 75.498];
 
 function createMarkerIcon(type, isActive) {
-  const color   = TYPE_COLORS[type] || "#334454";
-  const sz      = isActive ? 48 : 38;
-  const iconSz  = isActive ? 20 : 16;
-  const paths   = ICON_SVG[type] || "";
+  const color  = TYPE_COLORS[type] || "#334454";
+  const sz     = isActive ? 36 : 28;
+  const paths  = ICON_SVG[type] || "";
 
   return L.divIcon({
     html: `
-      <div style="
-        width:${sz}px;height:${sz}px;
-        background:${color};
-        border-radius:50%;
-        border:3px solid white;
-        display:flex;align-items:center;justify-content:center;
-        box-shadow:0 4px 14px rgba(0,0,0,.22)${isActive ? `,0 0 0 7px ${color}30` : ""};
-      ">
-        <svg
-          width="${iconSz}" height="${iconSz}"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >${paths}</svg>
-      </div>`,
+      <svg
+        width="${sz}" height="${sz}"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="${color}"
+        stroke-width="${isActive ? "2.2" : "2"}"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        style="filter:drop-shadow(0 1px 3px rgba(0,0,0,.45));"
+      >${paths}</svg>`,
     className: "",
     iconSize:    [sz, sz],
     iconAnchor:  [sz / 2, sz / 2],
-    popupAnchor: [0, -(sz / 2 + 10)],
+    popupAnchor: [0, -(sz / 2 + 6)],
   });
 }
 
